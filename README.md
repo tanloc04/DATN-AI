@@ -1,7 +1,7 @@
 # Mục Tiêu Tổng Thể
 Xây dựng 1 mô hình AI và tích hợp vào hệ thống nhằm tối ưu hóa trải nghiệm mua sắm trực tuyến của người dùng trên các sàn thương mại điện tử.
 
-## Tiến Trinh Chi Tiết
+## Tiến Trình Chi Tiết
 ### Giai đoạn 1: Khảo sát & Phân tích yêu cầu (Tháng 05/2025)
 Tuần 1 - 2
 Nghiên cứu tổng quan về các mô hình AI trong TMĐT như: collaborative filtering, content-based và hydrid model.
