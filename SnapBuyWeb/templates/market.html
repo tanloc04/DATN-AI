@@ -1,10 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Market Page</title>
+    <title>Product list</title>
 </head>
 <body>
-    <h1>This is market page</h1>
+    <h1>Market</h1>
+
+    <p><a href="/">Back to home</a> | <a href="/add">Add product</a></p>
+
+    <ul>
+        {% for product in products %}
+        <li>
+            <strong>{{ product.name }}</strong> - {{ product.price }} VNĐ <br>
+            {{ product.description }}
+            <a href="/edit/{{ product.id }}">Edit</a> |
+            <a href="/delete/{{ product.id }}">Delete</a>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
