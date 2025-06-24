@@ -11,6 +11,27 @@ products = [
     {"id": 3, "name": "Sữa chua", "price": "50000", "description": "Sản phẩm uy tín"}
 ]
 
+orders = [
+    {
+        'id': 1,
+        'customer_name': 'Nguyễn Văn A',
+        'product_name': 'Dầu ăn',
+        'status': 'Processing'
+    },
+    {
+        'id': 2,
+        'customer_name': 'Trần Thị B',
+        'product_name': 'Mỳ gói',
+        'status': 'Delivering'
+    },
+    {
+        'id': 3,
+        'customer_name': 'Lê Tuấn C',
+        'product_name': 'Dầu gội',
+        'status': 'Completed'
+    }
+]
+
 @app.route('/')
 @app.route('/home')
 def home_page():
@@ -55,6 +76,19 @@ def edit_product(id):
         return redirect(url_for('market_page'))
 
     return render_template('edit.html', product=product)
+
+@app.route('/orders')
+def order_list():
+    return render_template('orders.html', orders=orders)
+
+@app.route('/update_order/<int:id>', methods=['POST'])
+def update_order(id):
+    new_status = request.form.get('status')
+    for order in orders:
+        if order['id'] == id:
+            order['status'] = new_status
+            break
+    return redirect(url_for('order_list'))
 
 def open_browser():
     webbrowser.open_new('http://127.0.0.1:5000/')
