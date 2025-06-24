@@ -5,19 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/run.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/DATN-AI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DATN-AI.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/market.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/market.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/orders.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,6 +53,7 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\DATN-AI\SnapBuyWeb\market" />
+      <recent name="E:\DATN-AI\SnapBuyWeb" />
     </key>
   </component>
   <component name="RunManager">
