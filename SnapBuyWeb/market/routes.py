@@ -1,9 +1,4 @@
-import threading
-import webbrowser
-
-from flask import Flask, render_template, request, redirect, url_for
-
-app = Flask(__name__)
+from market import app
 
 products = [
     {"id": 1, "name": "Táo", "price": "10000", "description": "Hàng mới tươi tốt"},
@@ -89,11 +84,3 @@ def update_order(id):
             order['status'] = new_status
             break
     return redirect(url_for('order_list'))
-
-def open_browser():
-    webbrowser.open_new('http://127.0.0.1:5000/')
-
-if __name__ == '__main__':
-    threading.Timer(1.25, open_browser).start()
-    app.run(debug=True, use_reloader=False)
-

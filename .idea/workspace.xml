@@ -5,10 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/templates/orders.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/run.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/market.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/market.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/templates/orders.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/orders.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +28,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -36,18 +46,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.market.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;tai&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.market.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "loc",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "E:/DATN-AI"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\DATN-AI\SnapBuyWeb\market" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="market" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DATN" />
@@ -62,7 +78,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SnapBuyWeb/market.py" />
+      <option name="SCRIPT_NAME" value="E:\DATN-AI\SnapBuyWeb\market\market.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
