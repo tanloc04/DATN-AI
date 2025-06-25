@@ -5,33 +5,6 @@ from flask import request, render_template, redirect, url_for, flash
 from market.models import Admin
 from market.forms import AdminRegisterForm, AdminLoginForm
 
-products = [
-    {"id": 1, "name": "Táo", "price": "10000", "description": "Hàng mới tươi tốt"},
-    {"id": 2, "name": "Bột giặt", "price": "150000", "description": "Sản phẩm chất lượng"},
-    {"id": 3, "name": "Sữa chua", "price": "50000", "description": "Sản phẩm uy tín"}
-]
-
-orders = [
-    {
-        'id': 1,
-        'customer_name': 'Nguyễn Văn A',
-        'product_name': 'Dầu ăn',
-        'status': 'Processing'
-    },
-    {
-        'id': 2,
-        'customer_name': 'Trần Thị B',
-        'product_name': 'Mỳ gói',
-        'status': 'Delivering'
-    },
-    {
-        'id': 3,
-        'customer_name': 'Lê Tuấn C',
-        'product_name': 'Dầu gội',
-        'status': 'Completed'
-    }
-]
-
 @app.route('/')
 @app.route('/home')
 def home_page():
