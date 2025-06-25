@@ -1,4 +1,9 @@
-from market import app
+from flask_login import login_user
+
+from market import app, db
+from flask import request, render_template, redirect, url_for, flash
+from market.models import Admin
+from market.forms import AdminRegisterForm, AdminLoginForm
 
 products = [
     {"id": 1, "name": "Táo", "price": "10000", "description": "Hàng mới tươi tốt"},
@@ -84,3 +89,32 @@ def update_order(id):
             order['status'] = new_status
             break
     return redirect(url_for('order_list'))
+
+@app.route('/admin/register', methods=['GET', 'POST'])
+def register_admin():
+    form = AdminRegisterForm()
+    if form.validate_on_submit():
+        admin_to_create = Admin(username=form.username.data,
+                                email=form.email.data,
+                                password=form.password.data)
+        db.session.add(admin_to_create)
+        db.session.commit()
+        flash('Admin registered successfully!', category='success')
+        return redirect(url_for('admin_login'))
+    return render_template('admin/register.html', form=form)
+
+@app.route('/admin/login', methods=['GET', 'POST'])
+def login_admin():
+    form = AdminLoginForm()
+    if form.validate_on_submit():
+        attempted_admin = Admin.query.filter_by(username=form.username.data).first()
+        if attempted_admin and attempted_admin.check_password_correction(attempted_password=form.password.data):
+            login_user(attempted_admin)
+            flash(f'Success! You are logged in as: {attempted_admin.username}', category='success')
+            return redirect(url_for('home_page'))
+        else:
+            flash('Username or password not match! Please try again.', category='danger')
+    return render_template('admin/login.html', form=form)
+
+
+
