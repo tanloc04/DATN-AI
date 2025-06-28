@@ -1,28 +1,56 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Admin Login</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
+<style>
+        body {
+            background: #f8f9fa;
+        }
+        .login-card {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-weight: 600;
+            margin-bottom: 25px;
+            color: #343a40;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 5px rgba(13, 110, 253, 0.5);
+        }
+        .btn-primary {
+            width: 100%;
+        }
+</style>
+<body>
+    <div class="container">
+        <div class="login-card">
+            <h2 class="text-center">Admin Login</h2>
+            <form method="POST">
+                {{ form.hidden_tag() }}
 
-        <div class="mb-3">
-            {{ form.username.label(class="form-label") }}
-            {{ form.username(class="form-control") }}
-            {% for error in form.username.errors %}
-                <div class="text-danger">{{ error }}</div>
-            {% endfor %}
+                <div class="mb-3">
+                    {{ form.username.label(class="form-label") }}
+                    {{ form.username(class="form-control", placeholder="User Name") }}
+                    {% for error in form.username.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.password.label(class="form-label") }}
+                    {{ form.password(class="form-control", placeholder="Password") }}
+                    {% for error in form.password.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn btn-primary mt-2") }}
+            </form>
         </div>
-
-        <div class="mb-3">
-            {{ form.password.label(class="form-label") }}
-            {{ form.password(class="form-control") }}
-            {% for error in form.password.errors %}
-                <div class="text-danger">{{ error }}</div>
-            {% endfor %}
-        </div>
-
-        {{ form.submit(class="btn btn-primary") }}
-    </form>
-</div>
+    </div>
+</body>
 {% endblock %}
