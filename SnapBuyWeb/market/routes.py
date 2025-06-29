@@ -1,36 +1,8 @@
 from flask_login import login_user
-
 from market import app, db
 from flask import request, render_template, redirect, url_for, flash
-from market.models import Admin
-from market.forms import AdminRegisterForm, AdminLoginForm
-
-products = [
-    {"id": 1, "name": "Táo", "price": "10000", "description": "Hàng mới tươi tốt"},
-    {"id": 2, "name": "Bột giặt", "price": "150000", "description": "Sản phẩm chất lượng"},
-    {"id": 3, "name": "Sữa chua", "price": "50000", "description": "Sản phẩm uy tín"}
-]
-
-orders = [
-    {
-        'id': 1,
-        'customer_name': 'Nguyễn Văn A',
-        'product_name': 'Dầu ăn',
-        'status': 'Processing'
-    },
-    {
-        'id': 2,
-        'customer_name': 'Trần Thị B',
-        'product_name': 'Mỳ gói',
-        'status': 'Delivering'
-    },
-    {
-        'id': 3,
-        'customer_name': 'Lê Tuấn C',
-        'product_name': 'Dầu gội',
-        'status': 'Completed'
-    }
-]
+from market.models import Admin, Item
+from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm
 
 @app.route('/')
 @app.route('/home')
@@ -39,56 +11,71 @@ def home_page():
 
 @app.route('/market')
 def market_page():
-    return render_template('market.html', products=products)
+    items = Item.query.all()
+    return render_template('market.html', items=items)
 
-@app.route('/add', methods=['GET', 'POST'])
-def add_product():
-    if request.method == 'POST':
-        name = request.form['name']
-        price = request.form['price']
-        description = request.form['description']
-        new_id = products[-1]['id'] + 1 if products else 1
-        products.append({
-            "id": new_id,
-            "name": name,
-            "price": price,
-            "description": description
-        })
-        return redirect(url_for('market_page'))
-    return render_template('add.html')
 
-@app.route('/delete/<int:id>')
-def delete_product(id):
-    global products
-    products = [p for p in products if p['id'] != id]
-    return redirect(url_for('market_page'))
+@app.route('/items')
+#@login_required
+def item_list():
+    items = Item.query.all()
+    return render_template('item/list.html', items=items)
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit_product(id):
-    product = next((p for p in products if p['id'] == id), None)
-    if not product:
-        return "NOT AVAILABLE", 404
 
-    if request.method == 'POST':
-        product['name'] = request.form['name']
-        product['price'] = request.form['price']
-        product['description'] = request.form['description']
-        return redirect(url_for('market_page'))
+@app.route('/items/add', methods=['GET', 'POST'])
+def add_item():
+    form = ItemForm()
+    if form.validate_on_submit():
+        item = Item(
+            name=form.name.data,
+            price=form.price.data,
+            description=form.description.data,
+            image_url=form.image_url.data
+        )
+        try:
+            db.session.add(item)
+            db.session.commit()
+            flash(f'Item "{item.name}" has been added successfully!', 'success')
+            return redirect(url_for('item_list'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error adding item: {str(e)}', 'danger')
+    return render_template('item/add.html', form=form)
 
-    return render_template('edit.html', product=product)
 
-@app.route('/orders')
-def order_list():
-    return render_template('orders.html', orders=orders)
+@app.route('/items/edit/<int:id>', methods=['GET', 'POST'])
+def edit_item(id):
+    item = Item.query.get_or_404(id)
+    form = ItemForm(obj=item)
 
-@app.route('/update_order/<int:id>', methods=['POST'])
-def update_order(id):
-    new_status = request.form.get('status')
-    for order in orders:
-        if order['id'] == id:
-            order['status'] = new_status
-            break
-    return redirect(url_for('order_list'))
+    if form.validate_on_submit():
+        item.name = form.name.data
+        item.price = form.price.data
+        item.description = form.description.data
+        item.image_url = form.image_url.data
+        try:
+            db.session.commit()
+            flash(f'Item "{item.name}" has been updated successfully!', 'success')
+            return redirect(url_for('item_list'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating item: {str(e)}', 'danger')
+
+    return render_template('item/edit.html', form=form, item=item)
+
+
+@app.route('/items/delete/<int:id>')
+def delete_item(id):
+    item = Item.query.get_or_404(id)
+    item_name = item.name
+    try:
+        db.session.delete(item)
+        db.session.commit()
+        flash(f'Item "{item_name}" has been deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting item: {str(e)}', 'danger')
+    return redirect(url_for('item_list'))
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register_admin():
@@ -115,6 +102,5 @@ def login_admin():
         else:
             flash('Username or password not match! Please try again.', category='danger')
     return render_template('admin/login.html', form=form)
-
 
 

@@ -1,9 +1,7 @@
 import datetime
-
 from market import db, login_manager
 from market import bcrypt
 from flask_login import UserMixin
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -29,5 +27,14 @@ class Admin(db.Model, UserMixin):
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
 
+class Item(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=100))
+    price = db.Column(db.Numeric(10, 2))
+    description = db.Column(db.Text())
+    image_url = db.Column(db.String(length=255))
+    created_at = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
 
+    def __repr__(self):
+        return f'<Item {self.name}>'
 
