@@ -5,7 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +58,8 @@
     &quot;Python.market.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;tai&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;loc&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;E:/DATN-AI&quot;
   }
