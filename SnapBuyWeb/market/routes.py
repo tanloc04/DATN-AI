@@ -14,13 +14,11 @@ def market_page():
     items = Item.query.all()
     return render_template('user/market.html', items=items)
 
-
 @app.route('/items')
 #@login_required
 def item_list():
     items = Item.query.all()
     return render_template('item/list.html', items=items)
-
 
 @app.route('/items/add', methods=['GET', 'POST'])
 def add_item():
@@ -42,7 +40,6 @@ def add_item():
             flash(f'Error adding item: {str(e)}', 'danger')
     return render_template('item/add.html', form=form)
 
-
 @app.route('/items/edit/<int:id>', methods=['GET', 'POST'])
 def edit_item(id):
     item = Item.query.get_or_404(id)
@@ -62,7 +59,6 @@ def edit_item(id):
             flash(f'Error updating item: {str(e)}', 'danger')
 
     return render_template('item/edit.html', form=form, item=item)
-
 
 @app.route('/items/delete/<int:id>')
 def delete_item(id):
@@ -103,7 +99,6 @@ def login_admin():
         else:
             flash('Username or password not match! Please try again.', category='danger')
     return render_template('admin/login.html', form=form)
-
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():

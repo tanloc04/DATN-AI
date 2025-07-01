@@ -3,8 +3,6 @@ from market import db, login_manager
 from market import bcrypt
 from flask_login import UserMixin
 
-
-
 @login_manager.user_loader
 def load_user(user_id):
     from flask import session
@@ -14,7 +12,6 @@ def load_user(user_id):
     elif role == 'user':
         return User.query.get(int(user_id))
     return None
-
 
 class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
@@ -77,5 +74,4 @@ class Order(db.Model):
 
     user = db.relationship('User', backref='orders')
     item = db.relationship('Item', backref='orders')
-
 
