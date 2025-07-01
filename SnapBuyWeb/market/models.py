@@ -3,9 +3,18 @@ from market import db, login_manager
 from market import bcrypt
 from flask_login import UserMixin
 
+
+
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(int(user_id))
+    from flask import session
+    role = session.get('role')
+    if role == 'admin':
+        return Admin.query.get(int(user_id))
+    elif role == 'user':
+        return User.query.get(int(user_id))
+    return None
+
 
 class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
@@ -34,7 +43,39 @@ class Item(db.Model):
     description = db.Column(db.Text())
     image_url = db.Column(db.String(length=255))
     created_at = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
 
     def __repr__(self):
         return f'<Item {self.name}>'
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    username = db.Column(db.String(length=30), nullable=False, unique=True)
+    email = db.Column(db.String(length=50), nullable=False, unique=True)
+    password_hash = db.Column(db.String(length=60), nullable=False)
+    is_active = db.Column(db.Boolean(), default=True)
+    items = db.relationship('Item', backref='owner', lazy=True)
+
+    @property
+    def password(self):
+        return self.password
+
+    @password.setter
+    def password(self, plain_text_password):
+        self.password_hash = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
+
+    def check_password_correction(self, attempted_password):
+        return bcrypt.check_password_hash(self.password_hash, attempted_password)
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=1)
+    total_price = db.Column(db.Numeric(10, 2))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    user = db.relationship('User', backref='orders')
+    item = db.relationship('Item', backref='orders')
+
 

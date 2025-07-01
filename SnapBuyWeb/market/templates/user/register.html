@@ -1,13 +1,17 @@
-{% extends 'base_admin.html' %}
+{% extends 'base_user.html' %}
+
+{% block title %}
+    Register Page
+{% endblock %}
 
 {% block content %}
 <style>
-        body {
+    body {
             background: #f8f9fa;
         }
-        .login-card {
-            max-width: 400px;
-            margin: 80px auto;
+        .register-card {
+            max-width: 450px;
+            margin: 60px auto;
             padding: 30px;
             border-radius: 15px;
             background-color: #ffffff;
@@ -27,8 +31,8 @@
 </style>
 <body>
     <div class="container">
-        <div class="login-card">
-            <h2 class="text-center">Admin Login</h2>
+        <div class="register-card">
+            <h2 class="text-center">User Register</h2>
             <form method="POST">
                 {{ form.hidden_tag() }}
 
@@ -41,9 +45,25 @@
                 </div>
 
                 <div class="mb-3">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", placeholder="Email") }}
+                    {% for error in form.email.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
                     {{ form.password.label(class="form-label") }}
                     {{ form.password(class="form-control", placeholder="Password") }}
                     {% for error in form.password.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.confirm_password.label(class="form-label") }}
+                    {{ form.confirm_password(class="form-control", placeholder="Confirm Password") }}
+                    {% for error in form.confirm_password.errors %}
                         <div class="text-danger small">{{ error }}</div>
                     {% endfor %}
                 </div>

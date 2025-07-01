@@ -1,0 +1,97 @@
+{% extends 'base_admin.html' %}
+
+{% block content %}
+<style>
+    .card-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+</style>
+
+<div class="container py-4">
+    <h2 class="mb-4">Admin Dashboard</h2>
+    <div class="row g-4">
+
+        <!-- Card: Item -->
+        <div class="col-md-4">
+            <a href="{{ url_for('item_list') }}" class="text-decoration-none">
+                <div class="card card-hover text-white bg-primary h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="bi bi-box-seam fs-1 me-3"></i>
+                        <div>
+                            <h5 class="card-title">Item</h5>
+                            <p class="card-text text-white">Manage products and inventory</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card: User -->
+        <div class="col-md-4">
+            <a href="#" class="text-decoration-none">
+                <div class="card card-hover text-white bg-success h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="bi bi-people fs-1 me-3"></i>
+                        <div>
+                            <h5 class="card-title">User</h5>
+                            <p class="card-text text-white">Manage users and permissions</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card: Category -->
+        <div class="col-md-4">
+            <a href="#" class="text-decoration-none">
+                <div class="card card-hover text-white bg-warning h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="bi bi-tags fs-1 me-3"></i>
+                        <div>
+                            <h5 class="card-title">Category</h5>
+                            <p class="card-text text-white">Organize products by category</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card: Import Data -->
+        <div class="col-md-6">
+            <a href="#" class="text-decoration-none">
+                <div class="card card-hover text-white bg-info h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="bi bi-upload fs-1 me-3"></i>
+                        <div>
+                            <h5 class="card-title">Import Data</h5>
+                            <p class="card-text text-white">Import data from external sources</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card: Analyze -->
+        <div class="col-md-6">
+            <a href="#" class="text-decoration-none">
+                <div class="card card-hover text-white bg-danger h-100 shadow-sm">
+                    <div class="card-body d-flex align-items-center">
+                        <i class="bi bi-graph-up fs-1 me-3"></i>
+                        <div>
+                            <h5 class="card-title">Analyze</h5>
+                            <p class="card-text text-white">View insights and statistics</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
