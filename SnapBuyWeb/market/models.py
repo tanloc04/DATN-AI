@@ -7,7 +7,14 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(int(user_id))
+    from flask import session
+    role = session.get('role')
+    if role == 'admin':
+        return Admin.query.get(int(user_id))
+    elif role == 'user':
+        return User.query.get(int(user_id))
+    return None
+
 
 class Admin(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)

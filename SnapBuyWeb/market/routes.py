@@ -1,6 +1,6 @@
-from flask_login import login_user
+from flask_login import login_user, logout_user
 from market import app, db
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, session
 from market.models import Admin, Item, User
 from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm
 
@@ -87,7 +87,7 @@ def register_admin():
         db.session.add(admin_to_create)
         db.session.commit()
         flash('Admin registered successfully!', category='success')
-        return redirect(url_for('admin_login'))
+        return redirect(url_for('login_admin'))
     return render_template('admin/register.html', form=form)
 
 @app.route('/admin/login', methods=['GET', 'POST'])
@@ -97,6 +97,7 @@ def login_admin():
         attempted_admin = Admin.query.filter_by(username=form.username.data).first()
         if attempted_admin and attempted_admin.check_password_correction(attempted_password=form.password.data):
             login_user(attempted_admin)
+            session['role'] = 'admin'
             flash(f'Success! You are logged in as: {attempted_admin.username}', category='success')
             return redirect(url_for('dashboard_page'))
         else:
@@ -124,8 +125,21 @@ def login_by_user():
         attempted_user = User.query.filter_by(username=form.username.data).first()
         if attempted_user and attempted_user.check_password_correction(attempted_password=form.password.data):
             login_user(attempted_user)
+            session['role'] = 'user'
             flash(f'Success! You are logged in as: {attempted_user.username}', category='success')
             return redirect(url_for('market_page'))
         else:
             flash('Username or password not match! Please try again.', category='danger')
     return render_template('user/login.html', form=form)
+
+@app.route('/logout')
+def logout():
+    role = session.get('role')
+    logout_user()
+    session.pop('role', None)
+
+    flash('You have been logged out!', category='info')
+    if role == 'admin':
+        return redirect(url_for('login_admin'))
+    else:
+        return redirect(url_for('login_by_user'))
