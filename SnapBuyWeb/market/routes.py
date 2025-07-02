@@ -1,4 +1,4 @@
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, current_user, login_required
 from market import app, db
 from flask import request, render_template, redirect, url_for, flash, session
 from market.models import Admin, Item, User
@@ -143,3 +143,69 @@ def logout():
         return redirect(url_for('login_admin'))
     else:
         return redirect(url_for('login_by_user'))
+
+@app.route('/item/<int:item_id>')
+def product_detail(item_id):
+    item = Item.query.get_or_404(item_id)
+    return render_template('item/detail.html', item=item)
+
+@app.route('/add_to_cart/<int:item_id>', methods=['POST'])
+@login_required
+def add_to_cart(item_id):
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể thêm sản phẩm vào giỏ hàng.', 'warning')
+        return redirect(url_for('login_by_user'))
+
+    item = Item.query.get_or_404(item_id)
+    quantity = int(request.form.get('quantity', 1))
+
+    if 'cart' not in session:
+        session['cart'] = {}
+
+    cart = session['cart']
+
+    if str(item_id) in cart:
+        cart[str(item_id)] += quantity
+    else:
+        cart[str(item_id)] = quantity
+
+    session['cart'] = cart
+    flash(f'Đã thêm {quantity} x "{item.name}" vào giỏ hàng.', 'success')
+    return redirect(url_for('product_detail', item_id=item.id))
+
+@app.context_processor
+def inject_cart_quantity():
+    cart = session.get('cart', {})
+    total_items = sum(cart.values())
+    return dict(cart_quantity=total_items)
+
+
+from flask import session
+
+
+@app.route('/cart')
+@login_required
+def view_cart():
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể xem giỏ hàng.', 'warning')
+        return redirect(url_for('login_by_user'))
+
+    cart = session.get('cart', {})
+    items = Item.query.filter(Item.id.in_(cart.keys())).all()
+
+    cart_details = []
+    total_price = 0
+
+    for item in items:
+        quantity = cart[str(item.id)]
+        item_total = float(item.price) * quantity
+        total_price += item_total
+        cart_details.append({
+            'item': item,
+            'quantity': quantity,
+            'total': item_total
+        })
+
+    return render_template('user/cart.html', cart_items=cart_details, total_price=total_price)
+
+

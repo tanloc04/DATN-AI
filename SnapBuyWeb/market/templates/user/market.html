@@ -71,7 +71,7 @@
                             {{ "{:,.0f}".format(item.price) }} đ
                         </p>
                     </div>
-                    <a href="#" class="btn btn-sm btn-primary">Xem</a>
+                    <a href="{{ url_for('product_detail', item_id=item.id) }}" class="btn btn-sm btn-primary">Xem</a>
                 </div>
             </div>
         </div>

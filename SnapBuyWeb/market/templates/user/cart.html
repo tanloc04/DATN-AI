@@ -1,0 +1,21 @@
+{% extends 'base_user.html' %}
+{% block title %}Giỏ hàng{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3 class="mb-4">Giỏ hàng của bạn</h3>
+    {% if cart_items %}
+        <ul class="list-group mb-3">
+            {% for item in cart_items %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ item.item.name }} (x{{ item.quantity }})
+                <span>{{ item.total | round(2) }}đ</span>
+            </li>
+            {% endfor %}
+        </ul>
+        <h5>Tổng cộng: {{ total_price | round(2) }}đ</h5>
+    {% else %}
+        <p>Giỏ hàng đang trống.</p>
+    {% endif %}
+</div>
+{% endblock %}
