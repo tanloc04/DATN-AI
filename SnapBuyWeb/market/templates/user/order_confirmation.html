@@ -1,0 +1,17 @@
+{% extends 'base_user.html' %}
+{% block title %}Xác nhận đơn hàng{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card text-center">
+            <div class="card-body">
+                <h1 class="card-title">Đơn hàng đã được đặt thành công!</h1>
+                <p class="card-text">Cảm ơn bạn đã đặt hàng! Đơn hàng của bạn đã được ghi nhận và sẽ được xử lý sớm.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('market_page') }}" class="btn btn-success btn-lg mr-2">Tiếp tục mua sắm</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-lg">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

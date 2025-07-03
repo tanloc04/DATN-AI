@@ -1,0 +1,68 @@
+{% extends 'base_user.html' %}
+{% block title %}Thanh toán{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Thông tin đặt hàng</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Giỏ hàng của bạn</h3>
+                <ul class="list-group mb-3">
+                    {% if cart_items %}
+                        {% for item in cart_items %}
+                            <li class="list-group-item d-flex justify-content-between">
+                                <span>{{ item.name }} (x{{ cart[item.id|string] if cart[item.id|string] is defined else 0 }})</span>
+                                <strong>{{ (item.price * (cart[item.id|string] if cart[item.id|string] is defined else 0)) | round(2) }}đ</strong>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item text-center">Không có sản phẩm trong giỏ hàng.</li>
+                    {% endif %}
+                </ul>
+                <h4 class="text-right">Tổng cộng: <strong>{{ total_price | round(2) }}đ</strong></h4>
+            </div>
+            <div class="col-md-6">
+                <h3>Nhập thông tin</h3>
+                <form method="POST" action="{{ url_for('checkout') }}">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.full_name.label(class="form-control-label") }}
+                        {{ form.full_name(class="form-control") }}
+                        {% for error in form.full_name.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.address.label(class="form-control-label") }}
+                        {{ form.address(class="form-control") }}
+                        {% for error in form.address.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.phone.label(class="form-control-label") }}
+                        {{ form.phone(class="form-control") }}
+                        {% for error in form.phone.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    {{ form.submit(class="btn btn-primary btn-block mt-3") }}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -55,3 +55,9 @@ class UserLoginForm(FlaskForm):
     username = StringField(label='Username', validators=[DataRequired()])
     password = PasswordField(label='Password', validators=[DataRequired()])
     submit = SubmitField(label='Login')
+
+class OrderForm(FlaskForm):
+    full_name = StringField(label='Full Name', validators=[Length(min=2, max=100), DataRequired()])
+    address = TextAreaField(label='Address', validators=[Length(min=5, max=200), DataRequired()])
+    phone = StringField(label='Phone Number', validators=[Length(min=10, max=15), DataRequired()])
+    submit = SubmitField(label='Submit')
