@@ -1,8 +1,8 @@
 from flask_login import login_user, logout_user, current_user, login_required
 from market import app, db
 from flask import request, render_template, redirect, url_for, flash, session
-from market.models import Admin, Item, User
-from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm
+from market.models import Admin, Item, User, Order
+from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm, OrderForm
 
 @app.route('/')
 @app.route('/admin/dashboard')
@@ -14,13 +14,10 @@ def market_page():
     items = Item.query.all()
     return render_template('user/market.html', items=items)
 
-
 @app.route('/items')
-#@login_required
 def item_list():
     items = Item.query.all()
     return render_template('item/list.html', items=items)
-
 
 @app.route('/items/add', methods=['GET', 'POST'])
 def add_item():
@@ -42,7 +39,6 @@ def add_item():
             flash(f'Error adding item: {str(e)}', 'danger')
     return render_template('item/add.html', form=form)
 
-
 @app.route('/items/edit/<int:id>', methods=['GET', 'POST'])
 def edit_item(id):
     item = Item.query.get_or_404(id)
@@ -62,7 +58,6 @@ def edit_item(id):
             flash(f'Error updating item: {str(e)}', 'danger')
 
     return render_template('item/edit.html', form=form, item=item)
-
 
 @app.route('/items/delete/<int:id>')
 def delete_item(id):
@@ -103,7 +98,6 @@ def login_admin():
         else:
             flash('Username or password not match! Please try again.', category='danger')
     return render_template('admin/login.html', form=form)
-
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():
@@ -208,4 +202,104 @@ def view_cart():
 
     return render_template('user/cart.html', cart_items=cart_details, total_price=total_price)
 
+@app.route('/remove_from_cart/<int:item_id>')
+@login_required
+def remove_from_cart(item_id):
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể xóa sản phẩm khỏi giỏ hàng.', 'warning')
+        return redirect(url_for('login_by_user'))
 
+    cart = session.get('cart', {})
+    if str(item_id) in cart:
+        del cart[str(item_id)]
+        session['cart'] = cart
+        flash('Sản phẩm đã được xóa khỏi giỏ hàng.', 'success')
+    else:
+        flash('Sản phẩm không tồn tại trong giỏ hàng.', 'warning')
+
+    return redirect(url_for('view_cart'))
+
+@app.route('/increase_quantity/<int:item_id>')
+@login_required
+def increase_quantity(item_id):
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể thay đổi số lượng.', 'warning')
+        return redirect(url_for('login_by_user'))
+
+    cart = session.get('cart', {})
+    if str(item_id) in cart:
+        cart[str(item_id)] += 1
+        session['cart'] = cart
+        flash('Số lượng đã được tăng.', 'success')
+    else:
+        flash('Sản phẩm không tồn tại trong giỏ hàng.', 'warning')
+
+    return redirect(url_for('view_cart'))
+
+@app.route('/decrease_quantity/<int:item_id>')
+@login_required
+def decrease_quantity(item_id):
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể thay đổi số lượng.', 'warning')
+        return redirect(url_for('login_by_user'))
+
+    cart = session.get('cart', {})
+    if str(item_id) in cart and cart[str(item_id)] > 1:
+        cart[str(item_id)] -= 1
+        session['cart'] = cart
+        flash('Số lượng đã được giảm.', 'success')
+    elif str(item_id) in cart and cart[str(item_id)] == 1:
+        del cart[str(item_id)]
+        session['cart'] = cart
+        flash('Số lượng giảm xuống 0, sản phẩm đã bị xóa.', 'success')
+    else:
+        flash('Sản phẩm không tồn tại trong giỏ hàng.', 'warning')
+
+    return redirect(url_for('view_cart'))
+
+@app.route('/checkout', methods=['GET', 'POST'])
+@login_required
+def checkout():
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể đặt hàng.', 'warning')
+        return redirect(url_for('login_by_user'))
+
+    cart = session.get('cart', {})
+    if not cart:
+        flash('Giỏ hàng của bạn đang trống.', 'warning')
+        return redirect(url_for('view_cart'))
+
+    form = OrderForm()
+    items = Item.query.filter(Item.id.in_([int(k) for k in cart.keys()])).all()
+    total_price = sum(float(item.price) * cart.get(str(item.id), 0) for item in items)
+
+    if form.validate_on_submit():
+        try:
+            for item_id in cart.keys():
+                item = Item.query.get_or_404(int(item_id))
+                quantity = cart[item_id]
+                order = Order(
+                    user_id=current_user.id,
+                    item_id=item.id,
+                    quantity=quantity,
+                    total_price=float(item.price) * quantity
+                )
+                db.session.add(order)
+            db.session.commit()
+            session.pop('cart', None)
+            flash('Đơn hàng của bạn đã được đặt thành công!', 'success')
+            return redirect(url_for('order_confirmation'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Có lỗi khi đặt hàng: {str(e)}', 'danger')
+            return redirect(url_for('checkout'))
+
+    return render_template('user/checkout.html', form=form, cart_items=items, cart=cart, total_price=total_price)
+
+@app.route('/order_confirmation')
+@login_required
+def order_confirmation():
+    if session.get('role') != 'user':
+        flash('Chỉ người dùng mới có thể xem xác nhận đơn hàng.', 'warning')
+        return redirect(url_for('login_by_user'))
+    return render_template('user/order_confirmation.html')
