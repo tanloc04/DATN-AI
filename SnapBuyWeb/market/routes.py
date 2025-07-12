@@ -1,8 +1,11 @@
 from flask_login import login_user, logout_user, current_user, login_required
 from market import app, db
-from flask import request, render_template, redirect, url_for, flash, session
-from market.models import Admin, Item, User, Order
-from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm, OrderForm
+from flask import request, render_template, redirect, url_for, flash, session, Blueprint, jsonify
+from market.models import Admin, Item, User, Order, Category, Rating
+from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm, OrderForm, CategoryForm, RatingForm
+import pickle
+
+recommend_bp = Blueprint('recommend', __name__)
 
 @app.route('/')
 @app.route('/admin/dashboard')
@@ -12,22 +15,26 @@ def dashboard_page():
 @app.route('/market')
 def market_page():
     items = Item.query.all()
-    return render_template('user/market.html', items=items)
+    categories = Category.query.all()
+    return render_template('user/market.html', items=items, categories=categories)
 
 @app.route('/items')
 def item_list():
     items = Item.query.all()
     return render_template('item/list.html', items=items)
 
+
 @app.route('/items/add', methods=['GET', 'POST'])
 def add_item():
     form = ItemForm()
+    form.category_id.choices = [(c.id, c.name) for c in Category.query.all()]
     if form.validate_on_submit():
         item = Item(
             name=form.name.data,
             price=form.price.data,
             description=form.description.data,
-            image_url=form.image_url.data
+            image_url=form.image_url.data,
+            category_id=form.category_id.data
         )
         try:
             db.session.add(item)
@@ -37,6 +44,7 @@ def add_item():
         except Exception as e:
             db.session.rollback()
             flash(f'Error adding item: {str(e)}', 'danger')
+
     return render_template('item/add.html', form=form)
 
 @app.route('/items/edit/<int:id>', methods=['GET', 'POST'])
@@ -44,11 +52,17 @@ def edit_item(id):
     item = Item.query.get_or_404(id)
     form = ItemForm(obj=item)
 
+    # Gán category_id cho field dropdown nếu GET (không cần khi POST vì FlaskForm tự xử lý)
+    if request.method == 'GET':
+        form.category_id.data = item.category_id
+
     if form.validate_on_submit():
         item.name = form.name.data
         item.price = form.price.data
         item.description = form.description.data
         item.image_url = form.image_url.data
+        item.category_id = form.category_id.data  # 🔥 Đừng quên lưu lại lựa chọn danh mục
+
         try:
             db.session.commit()
             flash(f'Item "{item.name}" has been updated successfully!', 'success')
@@ -58,6 +72,7 @@ def edit_item(id):
             flash(f'Error updating item: {str(e)}', 'danger')
 
     return render_template('item/edit.html', form=form, item=item)
+
 
 @app.route('/items/delete/<int:id>')
 def delete_item(id):
@@ -303,3 +318,128 @@ def order_confirmation():
         flash('Chỉ người dùng mới có thể xem xác nhận đơn hàng.', 'warning')
         return redirect(url_for('login_by_user'))
     return render_template('user/order_confirmation.html')
+
+@app.route('/categories')
+def category_list():
+    categories = Category.query.all()
+    return render_template('category/list.html', categories=categories)
+
+@app.route('/categories/add', methods=['GET', 'POST'])
+def add_category():
+    form = CategoryForm()
+    if form.validate_on_submit():
+        new_category = Category(
+            name = form.name.data,
+            description = form.description.data
+        )
+        db.session.add(new_category)
+        db.session.commit()
+        flash('Danh mục mới đã được thêm!', 'success')
+        return redirect(url_for('category_list'))
+    return render_template('category/add.html', form=form)
+
+
+@app.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
+def edit_category(id):
+    category = Category.query.get_or_404(id)
+    form = CategoryForm(obj=category)
+
+    if form.validate_on_submit():
+        category.name = form.name.data
+        category.description = form.description.data
+        db.session.commit()
+        flash('Danh mục đã được cập nhật!', 'success')
+        return redirect(url_for('category_list'))
+
+    return render_template('category/edit.html', form=form, category=category)
+
+@app.route('/categories/delete/<int:id>', methods=['POST'])
+def delete_category(id):
+    category = Category.query.get_or_404(id)
+    try:
+        db.session.delete(category)
+        db.session.commit()
+        flash('Đã xoá danh mục thành công!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Lỗi xoá danh mục: {str(e)}', 'danger')
+    return redirect(url_for('category_list'))
+
+@app.route('/orders')
+@login_required
+def view_orders():
+    if current_user.is_authenticated and hasattr(current_user, 'orders'):
+        orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).all()
+        return render_template('user/order.html', orders=orders)
+    flash('Hãy đăng nhập!', 'warning')
+    return redirect(url_for('login_by_user'))
+
+@app.route('/orders/confirm/<int:order_id>', methods=['POST'])
+@login_required
+def confirm_order(order_id):
+    order = Order.query.get_or_404(order_id)
+    if order.user_id != current_user.id:
+        flash('Unauthorized access.', 'danger')
+        return redirect(url_for('view_orders'))
+
+    order.status = 'delivered'
+    db.session.commit()
+    flash('Order marked as delivered. Please leave a review.', 'success')
+    return redirect(url_for('rate_order', order_id=order_id))
+
+@app.route('/orders/rate/<int:order_id>', methods=['GET', 'POST'])
+@login_required
+def rate_order(order_id):
+    order = Order.query.get_or_404(order_id)
+
+    if order.user_id != current_user.id:
+        flash('You are not authorized to rate this order.', 'danger')
+        return redirect(url_for('view_orders'))
+
+    form = RatingForm()
+    if form.validate_on_submit():
+        rating = Rating(
+            order_id=order.id,
+            user_id=current_user.id,
+            item_id=order.item_id,
+            rating=form.rating.data,
+            review=form.review.data
+        )
+        db.session.add(rating)
+        db.session.commit()
+        flash('Cảm ơn bạn đã đánh giá. Chúc bạn mua sắm vui vẻ!', 'success')
+        return redirect(url_for('view_orders'))
+
+    return render_template('user/rate_order.html', form=form, order=order)
+
+
+@recommend_bp.route('/recommendations')
+@login_required
+def recommend():
+    try:
+        with open('E:/AIModels/model.pkl', 'rb') as f:
+            model = pickle.load(f)
+
+        items = Item.query.all()
+        item_ids = [item.id for item in items]
+
+        predictions = []
+        for item_id in item_ids:
+            pred = model.predict(str(current_user.id), str(item_id))
+            predictions.append((item_id, pred.est))
+
+        top_items = sorted(predictions, key=lambda x: x[1], reverse=True)[:5]
+        recommended_items = [Item.query.get(item_id) for item_id, _ in top_items]
+
+        return render_template('user/recommendations.html', items=recommended_items)
+
+    except Exception as e:
+        return f"Lỗi gợi ý: {str(e)}"
+
+@app.route('/categories/<int:category_id>')
+def category_detail(category_id):
+    category = Category.query.get_or_404(category_id)
+    items = Item.query.filter_by(category_id=category.id).all()
+    categories = Category.query.all()
+
+    return render_template('user/market.html', items=items, categories=categories, selected_category=category)

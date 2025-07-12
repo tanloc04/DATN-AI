@@ -59,6 +59,13 @@
                         {% endif %}
                     </div>
                     <div class="mb-3">
+                        {{ form.category_id.label(class="form-label") }}
+                        {{ form.category_id(class="form-control") }}
+                        {% for error in form.category_id.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
                         <strong>Item Information:</strong><br>
                         <small>Created: {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                     </div>

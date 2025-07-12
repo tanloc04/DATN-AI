@@ -53,6 +53,15 @@
 </style>
 
 <div class="container mt-4">
+    <h4 class="mb-3">Danh Mục Sản Phẩm</h4>
+    <div class="row mb-4">
+        {% for category in categories %}
+        <div class="col-md-3 col-sm-6 mb-2">
+            <a href="{{ url_for('category_detail', category_id=category.id) }}" class="btn {% if selected_category and category.id == selected_category.id %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">{{ category.name }}</a>
+        </div>
+        {% endfor %}
+    </div>
+
     <h2 class="mb-4 text-center">Sản phẩm hiện có</h2>
     <div class="row justify-content-center">
         {% for item in items %}

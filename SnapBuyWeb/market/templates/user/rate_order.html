@@ -1,0 +1,21 @@
+{% extends 'base_user.html' %}
+{% block title %}
+Đánh giá đơn hàng
+{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h4>Đánh giá sản phẩm: {{ order.item.name }}</h4>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.rating.label(class="form-label") }}
+      {{ form.rating(class="form-control", min=1, max=5, placeholder="1-5") }}
+    </div>
+    <div class="mb-3">
+      {{ form.review.label(class="form-label") }}
+      {{ form.review(class="form-control", rows=3) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+  </form>
+</div>
+{% endblock %}

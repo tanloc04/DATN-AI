@@ -31,6 +31,7 @@
                                 <th>Price</th>
                                 <th>Image</th>
                                 <th>Description</th>
+                                <th>Category</th>
                                 <th>Created</th>
                                 <th>Actions</th>
                             </tr>
@@ -49,6 +50,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ item.description|default('-') }}</td>
+                                    <td>{{ item.category.name if item.category else 'Chưa có' }}</td>
                                     <td>{{ item.created_at.strftime('%Y-%m-%d') }}</td>
                                     <td>
                                         <a href="{{ url_for('edit_item', id=item.id) }}" class="btn btn-warning btn-sm">Edit</a>
