@@ -1,102 +1,89 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap 5.3 CSS -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapBuy - {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-
-
-    <title>
-      {% block title %}
-      {% endblock %}
-    </title>
-
-  </head>
-  <body class="bg-light">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg" style="background-color: #0033CC;">
         <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('market_page') }}">SnapBuy</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+            <a class="navbar-brand" href="{{ url_for('market_page') }}">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SnapBuy Logo" style="height: 40px;" class="me-2">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Item</a>
-                </li>
-              </ul>
-
-              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                {% if current_user.is_authenticated %}
-                  <li class="nav-item">
-                    <a class="nav-link">
-                      {% if session['role'] == 'admin' %}
-                        Welcome Admin, {{ current_user.username }}
-                      {% else %}
-                        Welcome, {{ current_user.username }}
-                      {% endif %}
-                    </a>
-                  </li>
-
-                  {% if session['role'] == 'user' %}
-                    <li class="nav-item position-relative">
-                      <a class="nav-link" href="{{ url_for('view_cart') }}">
-                        <i class="bi bi-cart"></i> Giỏ hàng
-                        {% if cart_quantity > 0 %}
-                          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {{ cart_quantity }}
-                            <span class="visually-hidden">cart items</span>
-                          </span>
-                        {% endif %}
-                      </a>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_page') }}">Home</a>
                     </li>
-                  {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('market_page') }}">Item</a>
+                    </li>
 
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                  </li>
-                {% else %}
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('login_by_user') }}">Login</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('register_user') }}">Register</a>
-                  </li>
-                {% endif %}
-              </ul>
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            {% if session['role'] == 'admin' %}
+                                <span class="nav-link text-success">Welcome Admin, {{ current_user.username }}</span>
+                            {% else %}
+                                <span class="nav-link text-primary">Welcome, {{ current_user.username }}</span>
+                            {% endif %}
+                        </li>
+
+                        {% if session['role'] == 'user' %}
+                            <li class="nav-item">
+                                <a class="nav-link position-relative" href="{{ url_for('view_cart') }}">
+                                    Giỏ hàng
+                                    {% if cart_quantity > 0 %}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                                            {{ cart_quantity }}
+                                            <span class="visually-hidden">cart items</span>
+                                        </span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-danger" href="{{ url_for('logout') }}">Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-primary" href="{{ url_for('login_by_user') }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-success" href="{{ url_for('register_user') }}">Register</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </nav>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-           {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">
-                  <button type="button" class="m1-2 mb-1 close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-                  {{ message }}
-              </div>
-           {% endfor %}
+            {% for category, message in messages %}
+                <div class="container mt-3">
+                    <div class="alert alert-{{ category }} alert-dismissible fade show mb-4 custom-alert" role="alert" style="animation: slideIn 0.5s ease;">
+                        <div class="d-flex align-items-center">
+                            <i class="bi {{ 'bi-check-circle-fill' if category == 'success' else 'bi-exclamation-triangle-fill' }} me-2" style="font-size: 1.2rem; color: {{ '#28a745' if category == 'success' else '#dc3545' }};"></i>
+                            <span class="fw-bold">{{ message }}</span>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
         {% endif %}
-      {% endwith %}
+    {% endwith %}
 
+    {% block content %}
+    {% endblock %}
 
-      {% block content %}
-
-      {% endblock %}
-
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-  </body>
+</body>
 </html>

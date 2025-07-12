@@ -4,7 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="" />
+    <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/css/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/cart.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/cart.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/checkout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/order_confirmation.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/order_confirmation.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -49,6 +65,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\DATN\SnapBuyWeb\market\static\images" />
       <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\user" />
       <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\item" />
       <recent name="E:\DATN-AI\SnapBuyWeb\market" />
@@ -87,7 +104,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-598b0484d0b5-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.74" />
+        <option value="bundled-python-sdk-4c141bd692a7-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.90" />
       </set>
     </attachedChunks>
   </component>

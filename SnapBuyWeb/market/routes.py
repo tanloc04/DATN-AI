@@ -64,6 +64,7 @@ def delete_item(id):
     item = Item.query.get_or_404(id)
     item_name = item.name
     try:
+        Order.query.filter_by(item_id=id).delete()
         db.session.delete(item)
         db.session.commit()
         flash(f'Item "{item_name}" has been deleted successfully!', 'success')
