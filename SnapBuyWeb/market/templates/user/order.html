@@ -1,0 +1,46 @@
+{% extends 'base_user.html' %}
+{% block title %}Đơn hàng của bạn{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h3>Đơn hàng của bạn</h3>
+  {% if orders %}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Sản phẩm</th>
+          <th>Giá</th>
+          <th>Số lượng</th>
+          <th>Tổng tiền</th>
+          <th>Ngày đặt</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+          <tr>
+            <td>{{ order.item.name }}</td>
+            <td>{{ order.item.price }} đ</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.total_price }} đ</td>
+            <td>{{ order.created_at.strftime('%d/%m/%Y') }}</td>
+            <td>{{ order.status or 'processing' }}</td>
+            <td>
+              {% if order.status != 'delivered' %}
+                <form action="{{ url_for('confirm_order', order_id=order.id) }}" method="post">
+                  <button class="btn btn-success btn-sm" type="submit">Đã nhận được hàng</button>
+                </form>
+              {% else %}
+                <span class="text-success">Đã giao</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Bạn chưa có đơn hàng nào.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="" />
+    <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/data/ratings.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/train-model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -38,27 +44,31 @@
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;Python.market.executor&quot;: &quot;Run&quot;,
+    &quot;Python.run.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;tai&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;loc&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/DATN-AI&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/DATN-AI/SnapBuyWeb/model-ml/data&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\DATN-AI\SnapBuyWeb\model-ml\data" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\DATN\SnapBuyWeb\market\static\images" />
-      <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\user" />
-      <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\item" />
-      <recent name="E:\DATN-AI\SnapBuyWeb\market" />
+      <recent name="C:\DATN-AI\SnapBuyWeb\model-ml" />
+      <recent name="E:\DATN-AI\SnapBuyWeb\train" />
       <recent name="E:\DATN-AI\SnapBuyWeb" />
+      <recent name="E:\DATN-AI\SnapBuyWeb\market" />
+      <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\user" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="market" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="run" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="DATN" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -68,10 +78,10 @@
       </envs>
       <option name="SDK_HOME" value="" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/SnapBuyWeb" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="E:\DATN-AI\SnapBuyWeb\market\market.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SnapBuyWeb/run.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -82,7 +92,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.market" />
+        <item itemvalue="Python.run" />
       </list>
     </recent_temporary>
   </component>
@@ -102,5 +112,19 @@
       <updated>1750340297130</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SnapBuyWeb/market/__init__.py</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SnapBuyWeb/market/forms.py</url>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

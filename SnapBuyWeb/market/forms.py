@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import Length, Email, EqualTo, DataRequired, ValidationError, URL
 from market.models import Admin, User
-from wtforms import FloatField, TextAreaField
+from wtforms import FloatField, TextAreaField, IntegerField
 from wtforms.validators import NumberRange
 
 class AdminRegisterForm(FlaskForm):
@@ -34,6 +34,15 @@ class ItemForm(FlaskForm):
     image_url = StringField(label='Image URL', validators=[Length(max=255), URL(), DataRequired()])
     submit = SubmitField(label='Save')
 
+    category_id = SelectField('Category', coerce=int, validators=[DataRequired()])
+
+class CategoryForm(FlaskForm):
+    name = StringField('Category Name', validators=[
+        DataRequired(), Length(min = 2, max = 100, message="Category name must be between 2 and 100 characters!")])
+    description = TextAreaField('Description', validators=[Length(max = 500, message = 'Description must be at most 500 characters!')])
+    submit = SubmitField('Save')
+
+
 class UserRegisterForm(FlaskForm):
     username = StringField(label='Username', validators=[Length(min=4, max=30), DataRequired()])
     email = StringField(label='Email', validators=[Email(), Length(max=100), DataRequired()])
@@ -61,3 +70,8 @@ class OrderForm(FlaskForm):
     address = TextAreaField(label='Address', validators=[Length(min=5, max=200), DataRequired()])
     phone = StringField(label='Phone Number', validators=[Length(min=10, max=15), DataRequired()])
     submit = SubmitField(label='Submit')
+
+class RatingForm(FlaskForm):
+    rating = IntegerField('Rating (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
+    review = TextAreaField('Comment')
+    submit = SubmitField('Submit Review')

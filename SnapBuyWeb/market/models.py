@@ -41,6 +41,7 @@ class Item(db.Model):
     image_url = db.Column(db.String(length=255))
     created_at = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=True)
 
     def __repr__(self):
         return f'<Item {self.name}>'
@@ -70,8 +71,32 @@ class Order(db.Model):
     item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
     quantity = db.Column(db.Integer, default=1)
     total_price = db.Column(db.Numeric(10, 2))
+    status = db.Column(db.String(20), default='processing')
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     user = db.relationship('User', backref='orders')
     item = db.relationship('Item', backref='orders')
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=100), nullable=False, unique=True)
+    description = db.Column(db.Text, nullable=True)
+
+    items = db.relationship('Item', backref='category', lazy=True)
+
+
+class Rating(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    item_id = db.Column(db.Integer, db.ForeignKey('item.id'), nullable=False)
+
+    rating = db.Column(db.Integer, nullable=False)
+    review = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    user = db.relationship('User', backref='ratings')
+    item = db.relationship('Item', backref='ratings')
+    order = db.relationship('Order', backref=db.backref('rating', uselist=False))
+
 
