@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/data/ratings.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/train-model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +19,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -47,17 +51,20 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;loc&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/DATN-AI&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/DATN-AI/SnapBuyWeb/model-ml/data&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\DATN-AI\SnapBuyWeb\model-ml\data" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\DATN-AI\SnapBuyWeb\model-ml" />
       <recent name="E:\DATN-AI\SnapBuyWeb\train" />
       <recent name="E:\DATN-AI\SnapBuyWeb" />
       <recent name="E:\DATN-AI\SnapBuyWeb\market" />
       <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\user" />
-      <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\item" />
     </key>
   </component>
   <component name="RunManager">

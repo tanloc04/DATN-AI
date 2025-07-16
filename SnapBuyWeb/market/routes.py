@@ -4,6 +4,7 @@ from flask import request, render_template, redirect, url_for, flash, session, B
 from market.models import Admin, Item, User, Order, Category, Rating
 from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm, OrderForm, CategoryForm, RatingForm
 import pickle
+import os
 
 recommend_bp = Blueprint('recommend', __name__)
 
@@ -416,8 +417,12 @@ def rate_order(order_id):
 @recommend_bp.route('/recommendations')
 @login_required
 def recommend():
+
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    MODEL_PATH = os.path.join(BASE_DIR, 'model-ml', 'model.pkl')
+
     try:
-        with open('E:/AIModels/model.pkl', 'rb') as f:
+        with open(MODEL_PATH, 'rb') as f:
             model = pickle.load(f)
 
         items = Item.query.all()
