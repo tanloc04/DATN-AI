@@ -1,0 +1,60 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    User Management
+{% endblock %}
+
+{% block content %}
+
+            <div class="container-fluid py-4">
+                <h2 class="text-primary fw-bold">Quản lý người dùng</h2>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Danh sách người dùng</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" class="text-center">Tên người dùng</th>
+                                        <th scope="col" class="text-center">Email</th>
+                                        <th scope="col" class="text-center">Trạng thái</th>
+                                        <th scope="col" class="text-center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td class="align-middle text-center">{{ user.username }}</td>
+                                        <td class="align-middle text-center">{{ user.email }}</td>
+                                        <td class="align-middle text-center">
+                                            <span class="{{ 'text-success' if user.is_active else 'text-danger' }}">
+                                                {{ 'Active' if user.is_active else 'Deactivated' }}
+                                            </span>
+                                            {% if user.deactivated_at %}
+                                                <small class="text-muted">(Deactivated since: {{ user.deactivated_at.strftime('%Y-%m-%d') }})</small>
+                                            {% endif %}
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            <form action="{{ url_for('toggle_user_status', user_id=user.id) }}" method="POST" style="display:inline;">
+                                                {% if user.is_active %}
+                                                    <input type="hidden" name="action" value="deactivate">
+                                                    <button type="submit" class="btn btn-danger btn-sm">Deactivate</button>
+                                                {% else %}
+                                                    <input type="hidden" name="action" value="activate">
+                                                    <button type="submit" class="btn btn-primary btn-sm">Activate</button>
+                                                {% endif %}
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}
