@@ -11,6 +11,7 @@ recommend_bp = Blueprint('recommend', __name__)
 
 @app.route('/')
 @app.route('/admin/dashboard')
+@login_required
 def dashboard_page():
     return render_template('admin/dashboard.html')
 
@@ -32,6 +33,7 @@ def revenue_data():
     return jsonify({'labels': labels, 'data': data})
 
 @app.route('/admin/analyze')
+@login_required
 def analyze_page():
     return render_template('admin/analyze.html')
 
@@ -347,11 +349,13 @@ def order_confirmation():
     return render_template('user/order_confirmation.html')
 
 @app.route('/categories')
+@login_required
 def category_list():
     categories = Category.query.all()
     return render_template('category/list.html', categories=categories)
 
 @app.route('/categories/add', methods=['GET', 'POST'])
+@login_required
 def add_category():
     form = CategoryForm()
     if form.validate_on_submit():
@@ -366,6 +370,7 @@ def add_category():
     return render_template('category/add.html', form=form)
 
 @app.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_category(id):
     category = Category.query.get_or_404(id)
     form = CategoryForm(obj=category)
@@ -380,6 +385,7 @@ def edit_category(id):
     return render_template('category/edit.html', form=form, category=category)
 
 @app.route('/categories/delete/<int:id>', methods=['POST'])
+@login_required
 def delete_category(id):
     category = Category.query.get_or_404(id)
     try:
@@ -466,6 +472,7 @@ def recommend():
         return f"Lỗi gợi ý: {str(e)}"
 
 @app.route('/categories/<int:category_id>')
+@login_required
 def category_detail(category_id):
     category = Category.query.get_or_404(category_id)
     items = Item.query.filter_by(category_id=category.id).all()
@@ -474,11 +481,13 @@ def category_detail(category_id):
     return render_template('user/market.html', items=items, categories=categories, selected_category=category)
 
 @app.route('/admin/users')
+@login_required
 def manage_users():
     users = User.query.all()
     return render_template('admin/user_management.html', users=users)
 
 @app.route('/admin/users/toggle_status/<int:user_id>', methods=['POST'])
+@login_required
 def toggle_user_status(user_id):
     user = User.query.get_or_404(user_id)
     action = request.form.get('action')
