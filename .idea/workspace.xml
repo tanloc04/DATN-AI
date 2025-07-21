@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/analyze.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/profile.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/user_management.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DATN-AI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DATN-AI.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -137,6 +137,15 @@
                         </ul>
                     </li>
                 </ul>
+            {% else %}
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login_admin') }}"><i class="bi bi-door-open"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register_admin') }}"><i class="bi bi-person-plus"></i> Register</a>
+                        </li>
+                    </ul>
             {% endif %}
         </div>
     </div>
@@ -154,7 +163,7 @@
 
 <!-- Main Content -->
 <div class="main-content" id="mainContent">
-    <h2 class="text-center fw-bold mb-2" style="font-size: 2rem;">Admin Dashboard</h2>
+    <h2 class="text-center fw-bold mb-2" style="font-size: 2rem;">Welcome to Admin Dashboard</h2>
 </div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
