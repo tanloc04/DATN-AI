@@ -84,7 +84,6 @@ class Category(db.Model):
 
     items = db.relationship('Item', backref='category', lazy=True)
 
-
 class Rating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False, unique=True)
@@ -98,5 +97,4 @@ class Rating(db.Model):
     user = db.relationship('User', backref='ratings')
     item = db.relationship('Item', backref='ratings')
     order = db.relationship('Order', backref=db.backref('rating', uselist=False))
-
 

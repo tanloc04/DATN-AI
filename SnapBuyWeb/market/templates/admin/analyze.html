@@ -1,0 +1,51 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}
+    Analyze
+{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-4">
+        <h2 class="text-primary fw-bold">Phân tích doanh thu</h2>
+
+        <section class="card">
+            <div class="card-header">
+                <h3>Tổng doanh thu</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        fetch('/admin/revenue_data')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Doanh thu (VND)',
+                            data: data.data,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+
+{% endblock %}

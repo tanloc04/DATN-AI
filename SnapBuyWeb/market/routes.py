@@ -6,6 +6,7 @@ from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegist
 from sqlalchemy.orm import joinedload
 import pickle
 import os
+from datetime import datetime, timedelta
 
 recommend_bp = Blueprint('recommend', __name__)
 
@@ -13,6 +14,27 @@ recommend_bp = Blueprint('recommend', __name__)
 @app.route('/admin/dashboard')
 def dashboard_page():
     return render_template('admin/dashboard.html')
+
+@app.route('/admin/revenue_data')
+def revenue_data():
+    delivered_orders = Order.query.filter_by(status='delivered').all()
+
+    revenue_by_item = {}
+    for order in delivered_orders:
+        item = order.item
+        if item.name in revenue_by_item:
+            revenue_by_item[item.name] += float(order.total_price)
+        else:
+            revenue_by_item[item.name] = float(order.total_price)
+
+    labels = list(revenue_by_item.keys())
+    data = list(revenue_by_item.values())
+
+    return jsonify({'labels': labels, 'data': data})
+
+@app.route('/admin/analyze')
+def analyze_page():
+    return render_template('admin/analyze.html')
 
 @app.route('/market')
 def market_page():
@@ -24,7 +46,6 @@ def market_page():
 def item_list():
     items = Item.query.all()
     return render_template('item/list.html', items=items)
-
 
 @app.route('/items/add', methods=['GET', 'POST'])
 def add_item():
@@ -75,12 +96,12 @@ def edit_item(id):
 
     return render_template('item/edit.html', form=form, item=item)
 
-
 @app.route('/items/delete/<int:id>')
 def delete_item(id):
     item = Item.query.get_or_404(id)
     item_name = item.name
     try:
+        Order.query.filter_by(item_id=id).delete()
         db.session.delete(item)
         db.session.commit()
         flash(f'Item "{item_name}" has been deleted successfully!', 'success')
@@ -104,6 +125,9 @@ def register_admin():
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def login_admin():
+    if current_user.is_authenticated:
+        flash('You are already logged in', 'info')
+        return redirect(url_for('dashboard_page'))
     form = AdminLoginForm()
     if form.validate_on_submit():
         attempted_admin = Admin.query.filter_by(username=form.username.data).first()
@@ -118,6 +142,9 @@ def login_admin():
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():
+    if current_user.is_authenticated:
+        flash('You must log out of your current account if you want to register a new account', 'info')
+        return redirect(url_for('market_page'))
     form = UserRegisterForm()
     if form.validate_on_submit():
         user_to_create = User(username=form.username.data,
@@ -131,6 +158,9 @@ def register_user():
 
 @app.route('/user/login', methods=['GET', 'POST'])
 def login_by_user():
+    if current_user.is_authenticated:
+        flash('You are already logged in', 'info')
+        return redirect(url_for('market_page'))
     form = UserLoginForm()
     if form.validate_on_submit():
         attempted_user = User.query.filter_by(username=form.username.data).first()
@@ -189,10 +219,6 @@ def inject_cart_quantity():
     cart = session.get('cart', {})
     total_items = sum(cart.values())
     return dict(cart_quantity=total_items)
-
-
-from flask import session
-
 
 @app.route('/cart')
 @login_required
@@ -340,7 +366,6 @@ def add_category():
         return redirect(url_for('category_list'))
     return render_template('category/add.html', form=form)
 
-
 @app.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
 def edit_category(id):
     category = Category.query.get_or_404(id)
@@ -414,7 +439,6 @@ def rate_order(order_id):
 
     return render_template('user/rate_order.html', form=form, order=order)
 
-
 @recommend_bp.route('/recommendations')
 @login_required
 def recommend():
@@ -457,3 +481,56 @@ def category_detail(category_id):
     categories = Category.query.all()
 
     return render_template('user/market.html', items=items, categories=categories, selected_category=category)
+
+@app.route('/admin/users')
+def manage_users():
+    users = User.query.all()
+    return render_template('admin/user_management.html', users=users)
+
+@app.route('/admin/users/toggle_status/<int:user_id>', methods=['POST'])
+def toggle_user_status(user_id):
+    user = User.query.get_or_404(user_id)
+    action = request.form.get('action')
+    if action == 'deactivate':
+        user.is_active = False
+        user.deactivated_at = datetime.utcnow()
+        flash(f'User "{user.username}" has been deactivated.', 'success')
+    elif action == 'activate':
+        user.is_active = True
+        user.deactivated_at = None
+        flash(f'User "{user.username}" has been activated.', 'success')
+    db.session.commit()
+    return redirect(url_for('manage_users'))
+
+@app.cli.command('cleanup_users')
+def cleanup_inactive_users():
+    threshold_date = datetime.utcnow() - timedelta(days=30)
+    inactive_users = User.query.filter(User.is_active == False, User.deactivated_at <= threshold_date).all()
+    for user in inactive_users:
+        db.session.delete(user)
+    db.session.commit()
+    print(f"Cleaned up {len(inactive_users)} inactive users")
+
+@app.route('/admin/profile', methods=['GET', 'POST'])
+@login_required
+def admin_profile():
+    if session.get('role') != 'admin':
+        flash('You are not authorized to access this page.', 'danger')
+        return redirect(url_for('login_admin'))
+
+    if request.method == 'POST':
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if current_user.check_password_correction(current_password):
+            if new_password == confirm_password and len(new_password) >= 6:
+                current_user.password = new_password
+                db.session.commit()
+                flash('Password updated successfully!', 'success')
+            else:
+                flash('New passwords do not match or are too short (minimum 6 characters).', 'danger')
+        else:
+            flash('Current password is incorrect.', 'danger')
+
+    return render_template('admin/profile.html')

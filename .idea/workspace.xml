@@ -18,8 +18,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -48,7 +48,7 @@
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;loc&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;tai&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/DATN-AI/SnapBuyWeb/model-ml/data&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
@@ -59,11 +59,11 @@
       <recent name="C:\DATN-AI\SnapBuyWeb\model-ml\data" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\DATN\SnapBuyWeb\market\templates\admin" />
       <recent name="C:\DATN-AI\SnapBuyWeb\model-ml" />
       <recent name="E:\DATN-AI\SnapBuyWeb\train" />
       <recent name="E:\DATN-AI\SnapBuyWeb" />
       <recent name="E:\DATN-AI\SnapBuyWeb\market" />
-      <recent name="E:\DATN-AI\SnapBuyWeb\market\templates\user" />
     </key>
   </component>
   <component name="RunManager">
@@ -111,19 +111,5 @@
       <updated>1750340297130</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/SnapBuyWeb/market/__init__.py</url>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/SnapBuyWeb/market/forms.py</url>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
