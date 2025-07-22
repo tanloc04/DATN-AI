@@ -17,7 +17,7 @@ trainset, testset = train_test_split(data, test_size=0.2, random_state=42)
 model = SVD()
 model.fit(trainset)
 
-print("Một vài dự đoán mẫu:")
+print("Đưa ra một vài dự đoán mẫu:")
 for i in range(10):
     uid, iid, true_r = testset[i]
     pred = model.predict(uid, iid, r_ui=true_r)
@@ -26,4 +26,4 @@ for i in range(10):
 with open("model.pkl", "wb") as f:
     pickle.dump(model, f)
 
-print("✅ Mô hình đã được huấn luyện và lưu vào 'model.pkl'")
+print("✅ Mô hình đã được huấn luyện và lưu vào file 'model.pkl'")

@@ -3,6 +3,7 @@ from market import app, db
 from flask import request, render_template, redirect, url_for, flash, session, Blueprint, jsonify
 from market.models import Admin, Item, User, Order, Category, Rating
 from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm, OrderForm, CategoryForm, RatingForm
+from sqlalchemy.orm import joinedload
 import pickle
 import os
 from datetime import datetime, timedelta
@@ -447,7 +448,6 @@ def rate_order(order_id):
 @recommend_bp.route('/recommendations')
 @login_required
 def recommend():
-
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     MODEL_PATH = os.path.join(BASE_DIR, 'model-ml', 'model.pkl')
 
@@ -455,14 +455,22 @@ def recommend():
         with open(MODEL_PATH, 'rb') as f:
             model = pickle.load(f)
 
-        items = Item.query.all()
-        item_ids = [item.id for item in items]
+        # Lấy toàn bộ sản phẩm
+        items = Item.query.options(joinedload(Item.orders)).all()
 
+        # Lấy ID sản phẩm mà user đã mua
+        purchased_item_ids = {order.item_id for order in current_user.orders}
+
+        # Lọc ra những sản phẩm mà user chưa mua
+        item_ids = [item.id for item in items if item.id not in purchased_item_ids]
+
+        # Dự đoán rating
         predictions = []
         for item_id in item_ids:
             pred = model.predict(str(current_user.id), str(item_id))
             predictions.append((item_id, pred.est))
 
+        # Chọn top 5 sản phẩm được dự đoán rating cao nhất
         top_items = sorted(predictions, key=lambda x: x[1], reverse=True)[:5]
         recommended_items = [Item.query.get(item_id) for item_id, _ in top_items]
 
@@ -470,6 +478,7 @@ def recommend():
 
     except Exception as e:
         return f"Lỗi gợi ý: {str(e)}"
+
 
 @app.route('/categories/<int:category_id>')
 @login_required
