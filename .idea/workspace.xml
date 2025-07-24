@@ -5,10 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/user_profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/model-ml/train-model.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/train-model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

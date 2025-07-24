@@ -7,14 +7,35 @@ from sqlalchemy.orm import joinedload
 import pickle
 import os
 from datetime import datetime, timedelta
+from functools import wraps
+from werkzeug.security import generate_password_hash
 
 recommend_bp = Blueprint('recommend', __name__)
 
-@app.route('/')
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login_admin'))
+        elif session.get('role') != 'admin':
+            return redirect(url_for('market_page'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/admin/dashboard')
-@login_required
+@admin_required
 def dashboard_page():
-    return render_template('admin/dashboard.html')
+    total_items = Item.query.count()
+    total_users = User.query.count()
+    total_orders = Order.query.count()
+    total_ratings = Rating.query.count()
+    total_categories = Category.query.count()
+    return render_template('admin/dashboard.html',
+                           total_items=total_items,
+                           total_users=total_users,
+                           total_orders=total_orders,
+                           total_ratings=total_ratings,
+                           total_categories=total_categories)
 
 @app.route('/admin/revenue_data')
 def revenue_data():
@@ -34,15 +55,31 @@ def revenue_data():
     return jsonify({'labels': labels, 'data': data})
 
 @app.route('/admin/analyze')
-@login_required
 def analyze_page():
     return render_template('admin/analyze.html')
 
+@app.route('/')
 @app.route('/market')
 def market_page():
-    items = Item.query.all()
     categories = Category.query.all()
-    return render_template('user/market.html', items=items, categories=categories)
+    featured_categories = categories[:10]
+    price_filter = request.args.get('price_filter')
+    query = Item.query
+    if price_filter == 'asc':
+        query = query.order_by(Item.price.asc())
+    elif price_filter == 'desc':
+        query = query.order_by(Item.price.desc())
+    items = query.limit(16).all()
+    suggested_items = Item.query.order_by(Item.id.desc()).limit(8).all()
+    recently_viewed_ids = session.get('viewed_items', [])
+    recently_viewed_items = Item.query.filter(Item.id.in_(recently_viewed_ids)).limit(4).all()
+    return render_template('user/market.html', items=items, categories=categories,
+                           featured_categories=featured_categories,
+                           suggested_items=suggested_items,
+                           recently_viewed=recently_viewed_items,
+                           selected_category = None,
+                           price_filter=price_filter
+                           )
 
 @app.route('/items')
 def item_list():
@@ -77,7 +114,6 @@ def edit_item(id):
     item = Item.query.get_or_404(id)
     form = ItemForm(obj=item)
 
-    # Gán category_id cho field dropdown nếu GET (không cần khi POST vì FlaskForm tự xử lý)
     if request.method == 'GET':
         form.category_id.data = item.category_id
 
@@ -86,7 +122,7 @@ def edit_item(id):
         item.price = form.price.data
         item.description = form.description.data
         item.image_url = form.image_url.data
-        item.category_id = form.category_id.data  # 🔥 Đừng quên lưu lại lựa chọn danh mục
+        item.category_id = form.category_id.data
 
         try:
             db.session.commit()
@@ -127,8 +163,8 @@ def register_admin():
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def login_admin():
-    if current_user.is_authenticated:
-        flash('You are already logged in', 'info')
+    if current_user.is_authenticated and session.get('role') == 'admin':
+        flash('Bạn đã đăng nhập rồi.', 'info')
         return redirect(url_for('dashboard_page'))
     form = AdminLoginForm()
     if form.validate_on_submit():
@@ -144,9 +180,6 @@ def login_admin():
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():
-    if current_user.is_authenticated:
-        flash('You must log out of your current account if you want to register a new account', 'info')
-        return redirect(url_for('market_page'))
     form = UserRegisterForm()
     if form.validate_on_submit():
         user_to_create = User(username=form.username.data,
@@ -160,8 +193,8 @@ def register_user():
 
 @app.route('/user/login', methods=['GET', 'POST'])
 def login_by_user():
-    if current_user.is_authenticated:
-        flash('You are already logged in', 'info')
+    if current_user.is_authenticated and session.get('role') == 'user':
+        flash('Bạn đã đăng nhập rồi.', 'info')
         return redirect(url_for('market_page'))
     form = UserLoginForm()
     if form.validate_on_submit():
@@ -190,6 +223,10 @@ def logout():
 @app.route('/item/<int:item_id>')
 def product_detail(item_id):
     item = Item.query.get_or_404(item_id)
+    viewed = session.get('viewed_items', [])
+    if item_id not in viewed:
+        viewed.insert(0, item_id)
+    session['viewed_items'] = viewed[:10]
     return render_template('item/detail.html', item=item)
 
 @app.route('/add_to_cart/<int:item_id>', methods=['POST'])
@@ -248,7 +285,6 @@ def view_cart():
     return render_template('user/cart.html', cart_items=cart_details, total_price=total_price)
 
 @app.route('/remove_from_cart/<int:item_id>')
-@login_required
 def remove_from_cart(item_id):
     if session.get('role') != 'user':
         flash('Chỉ người dùng mới có thể xóa sản phẩm khỏi giỏ hàng.', 'warning')
@@ -265,7 +301,6 @@ def remove_from_cart(item_id):
     return redirect(url_for('view_cart'))
 
 @app.route('/increase_quantity/<int:item_id>')
-@login_required
 def increase_quantity(item_id):
     if session.get('role') != 'user':
         flash('Chỉ người dùng mới có thể thay đổi số lượng.', 'warning')
@@ -282,7 +317,6 @@ def increase_quantity(item_id):
     return redirect(url_for('view_cart'))
 
 @app.route('/decrease_quantity/<int:item_id>')
-@login_required
 def decrease_quantity(item_id):
     if session.get('role') != 'user':
         flash('Chỉ người dùng mới có thể thay đổi số lượng.', 'warning')
@@ -350,13 +384,11 @@ def order_confirmation():
     return render_template('user/order_confirmation.html')
 
 @app.route('/categories')
-@login_required
 def category_list():
     categories = Category.query.all()
     return render_template('category/list.html', categories=categories)
 
 @app.route('/categories/add', methods=['GET', 'POST'])
-@login_required
 def add_category():
     form = CategoryForm()
     if form.validate_on_submit():
@@ -371,7 +403,6 @@ def add_category():
     return render_template('category/add.html', form=form)
 
 @app.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
 def edit_category(id):
     category = Category.query.get_or_404(id)
     form = CategoryForm(obj=category)
@@ -386,7 +417,6 @@ def edit_category(id):
     return render_template('category/edit.html', form=form, category=category)
 
 @app.route('/categories/delete/<int:id>', methods=['POST'])
-@login_required
 def delete_category(id):
     category = Category.query.get_or_404(id)
     try:
@@ -479,7 +509,6 @@ def recommend():
     except Exception as e:
         return f"Lỗi gợi ý: {str(e)}"
 
-
 @app.route('/categories/<int:category_id>')
 @login_required
 def category_detail(category_id):
@@ -490,13 +519,11 @@ def category_detail(category_id):
     return render_template('user/market.html', items=items, categories=categories, selected_category=category)
 
 @app.route('/admin/users')
-@login_required
 def manage_users():
     users = User.query.all()
     return render_template('admin/user_management.html', users=users)
 
 @app.route('/admin/users/toggle_status/<int:user_id>', methods=['POST'])
-@login_required
 def toggle_user_status(user_id):
     user = User.query.get_or_404(user_id)
     action = request.form.get('action')
@@ -543,3 +570,32 @@ def admin_profile():
             flash('Current password is incorrect.', 'danger')
 
     return render_template('admin/profile.html')
+
+@app.route('/search_product')
+def search_product():
+    keyword = request.args.get('q', '')
+    items = Item.query.filter(Item.name.ilike(f'%{keyword}%')).all()
+    return render_template('user/market.html', items=items, categories=Category.query.all())
+
+@app.route('/user/profile', methods=['GET', 'POST'])
+@login_required
+def user_profile():
+    if session.get('role') != 'user':
+        flash("Bạn phải đăng nhập mới có quyền truy cập trang này", "danger")
+        return redirect(url_for('market_page'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if not new_password or not confirm_password:
+            flash("Vui lòng nhập đầy đủ thông tin mật khẩu.", "warning")
+        elif new_password != confirm_password:
+            flash("Mật khẩu không khớp.", "danger")
+        else:
+            current_user.password = generate_password_hash(new_password)
+            db.session.commit()
+            flash("Cập nhật mật khẩu thành công!", "success")
+            return redirect(url_for('user_profile'))
+
+    return render_template('/user/user_profile.html', user=current_user)
