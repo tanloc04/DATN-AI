@@ -9,6 +9,7 @@ import os
 from datetime import datetime, timedelta
 from functools import wraps
 from werkzeug.security import generate_password_hash
+from sqlalchemy import or_
 
 recommend_bp = Blueprint('recommend', __name__)
 
@@ -72,7 +73,9 @@ def market_page():
     items = query.limit(16).all()
     suggested_items = Item.query.order_by(Item.id.desc()).limit(8).all()
     recently_viewed_ids = session.get('viewed_items', [])
-    recently_viewed_items = Item.query.filter(Item.id.in_(recently_viewed_ids)).limit(4).all()
+    recently_viewed_items = Item.query.filter(Item.id.in_(recently_viewed_ids)).all()
+    id_order = {id_: i for i, id_ in enumerate(recently_viewed_ids)}
+    recently_viewed_items.sort(key=lambda x: id_order.get(x.id, 0))
     return render_template('user/market.html', items=items, categories=categories,
                            featured_categories=featured_categories,
                            suggested_items=suggested_items,
@@ -224,9 +227,10 @@ def logout():
 def product_detail(item_id):
     item = Item.query.get_or_404(item_id)
     viewed = session.get('viewed_items', [])
-    if item_id not in viewed:
-        viewed.insert(0, item_id)
-    session['viewed_items'] = viewed[:10]
+    if item_id in viewed:
+        viewed.remove(item_id)
+    viewed.insert(0, item_id)
+    session['viewed_items'] = viewed[:4]
     return render_template('item/detail.html', item=item)
 
 @app.route('/add_to_cart/<int:item_id>', methods=['POST'])
@@ -459,6 +463,11 @@ def rate_order(order_id):
         flash('You are not authorized to rate this order.', 'danger')
         return redirect(url_for('view_orders'))
 
+    existing_rating = Rating.query.filter_by(order_id=order.id, user_id=current_user.id).first()
+    if existing_rating:
+        flash('Bạn đã đánh giá đơn hàng này rồi.', 'info')
+        return redirect(url_for('view_orders'))
+
     form = RatingForm()
     if form.validate_on_submit():
         rating = Rating(
@@ -571,11 +580,31 @@ def admin_profile():
 
     return render_template('admin/profile.html')
 
-@app.route('/search_product')
+@app.route('/user/search')
 def search_product():
-    keyword = request.args.get('q', '')
-    items = Item.query.filter(Item.name.ilike(f'%{keyword}%')).all()
-    return render_template('user/market.html', items=items, categories=Category.query.all())
+    keyword = request.args.get("q", "").strip()
+    sort = request.args.get('sort', '')
+    category_id = request.args.get('category', type=int)
+    page = request.args.get('page', 1, type=int)
+    per_page = 8
+    query = Item.query
+    if keyword:
+        query = query.filter(or_(
+            Item.name.ilike(f"%{keyword}%"),
+            Item.description.ilike(f"%{keyword}%")
+        ))
+    if category_id:
+        query = query.filter_by(category_id=category_id)
+
+    if sort == 'price_asc':
+        query = query.order_by(Item.price.asc())
+    elif sort == 'price_desc':
+        query = query.order_by(Item.price.desc())
+    pagination = query.paginate(page=page, per_page=per_page)
+    items = pagination.items
+    categories = Category.query.all()
+    return render_template('user/search.html', keyword=keyword, items=items, sort=sort,
+                           selected_category=category_id, categories=categories, pagination=pagination)
 
 @app.route('/user/profile', methods=['GET', 'POST'])
 @login_required
@@ -599,3 +628,11 @@ def user_profile():
             return redirect(url_for('user_profile'))
 
     return render_template('/user/user_profile.html', user=current_user)
+
+@app.route("/about_us")
+def about_us():
+    return render_template("user/about_us.html")
+
+@app.route('/news')
+def news_page():
+    return render_template('/user/news.html')

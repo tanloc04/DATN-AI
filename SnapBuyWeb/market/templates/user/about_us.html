@@ -1,0 +1,144 @@
+{% extends 'base_user.html' %}
+{% block title %}Về chúng tôi{% endblock %}
+
+{% block content %}
+<style>
+  .about-header {
+    position: relative;
+    background: url('{{ url_for('static', filename='images/about_header.jpg') }}') center/cover no-repeat;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .about-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(13, 110, 253, 0.7);
+    z-index: 1;
+  }
+
+  .about-header-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    text-align: center;
+    animation: fadeIn 1.2s ease-out;
+  }
+
+  .about-header-content h1 {
+    font-size: 48px;
+    font-weight: 800;
+  }
+
+  .about-header-content p {
+    font-size: 18px;
+    opacity: 0.9;
+  }
+
+  .about-section {
+    padding: 60px 20px;
+    background-color: #f8f9fa;
+    animation: slideUp 0.8s ease;
+  }
+
+  .about-section h3 {
+    color: #0d6efd;
+    font-weight: bold;
+  }
+
+  .about-icon {
+    font-size: 40px;
+    color: #0d6efd;
+    margin-bottom: 10px;
+  }
+
+  .team-card {
+    background-color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+  }
+
+  .team-card:hover {
+    transform: translateY(-5px);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 576px) {
+    .about-header-content h1 {
+      font-size: 32px;
+    }
+    .about-header-content p {
+      font-size: 16px;
+    }
+  }
+</style>
+
+<div class="about-header">
+  <div class="about-overlay"></div>
+  <div class="about-header-content">
+    <h1>Về SnapBuy</h1>
+    <p>Đơn giản – Nhanh chóng – Tin cậy. Hành trình tạo nên trải nghiệm mua sắm tuyệt vời.</p>
+  </div>
+</div>
+
+<div class="about-section container text-center">
+  <div class="row mb-5">
+    <div class="col-md-4">
+      <div class="about-icon"><i class="bi bi-bag-heart"></i></div>
+      <h4>Sứ mệnh</h4>
+      <p>Chúng tôi mang đến trải nghiệm mua sắm trực tuyến đơn giản, tiện lợi và đáng tin cậy cho mọi khách hàng.</p>
+    </div>
+    <div class="col-md-4">
+      <div class="about-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <h4>Tầm nhìn</h4>
+      <p>Trở thành nền tảng thương mại điện tử hàng đầu, kết nối người tiêu dùng với sản phẩm chất lượng khắp nơi.</p>
+    </div>
+    <div class="col-md-4">
+      <div class="about-icon"><i class="bi bi-people-fill"></i></div>
+      <h4>Giá trị cốt lõi</h4>
+      <p>Tận tâm – Minh bạch – Đổi mới – Khách hàng là trung tâm trong mọi hoạt động.</p>
+    </div>
+  </div>
+
+  <h3 class="mb-4">Đội ngũ phát triển</h3>
+  <div class="row justify-content-center">
+    <div class="col-md-4 mb-4">
+      <div class="card team-card p-4">
+        <img src="{{ url_for('static', filename='images/team1.jpg') }}" alt="Nguyễn Tấn Lộc" class="rounded-circle mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+        <h5 class="fw-bold">Nguyễn Tấn Lộc</h5>
+        <p class="text-muted">Backend Developer</p>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card team-card p-4">
+        <img src="{{ url_for('static', filename='images/team2.png') }}" alt="Lê Hồ Thành Tài" class="rounded-circle mx-auto mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+        <h5 class="fw-bold">Lê Hồ Thành Tài</h5>
+        <p class="text-muted">Frontend Developer</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

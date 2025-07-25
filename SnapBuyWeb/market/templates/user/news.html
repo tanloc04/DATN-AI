@@ -1,0 +1,79 @@
+{% extends 'base_user.html' %}
+{% block title %}Tin tức thị trường{% endblock %}
+
+{% block content %}
+<style>
+  .news-header {
+    background: linear-gradient(to right, #007bff, #00c6ff);
+    color: white;
+    padding: 60px 20px;
+    text-align: center;
+    animation: fadeInDown 0.7s ease;
+  }
+
+  .news-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+
+  .news-section {
+    margin-top: 40px;
+    animation: fadeIn 1s ease;
+  }
+
+  .news-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .news-img {
+    height: 180px;
+    object-fit: cover;
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+</style>
+
+<div class="news-header">
+  <h1>Tin Tức Thị Trường</h1>
+  <p class="lead">Cập nhật xu hướng và thông tin mới nhất trong ngành thương mại điện tử</p>
+</div>
+
+<div class="container news-section">
+  <div class="row g-4">
+    {% set news_list = [
+      {"title": "Thị trường điện tử bùng nổ mùa hè", "desc": "Doanh số TV, laptop và điện thoại tăng mạnh trong tháng 7...", "img": "news1.jpg"},
+      {"title": "Xu hướng mua sắm bền vững", "desc": "Người tiêu dùng ưu tiên sản phẩm thân thiện với môi trường...", "img": "news2.jpg"},
+      {"title": "Khuyến mãi tháng 8 đổ bộ", "desc": "Các chuỗi bán lẻ tung loạt giảm giá siêu hấp dẫn...", "img": "news3.jpg"},
+      {"title": "Người dùng chuyển dịch sang mua sắm online", "desc": "Tăng trưởng mạnh trong thanh toán không tiền mặt...", "img": "news4.jpg"},
+      {"title": "Sản phẩm handmade lên ngôi", "desc": "Giới trẻ ưa chuộng sản phẩm thủ công, độc đáo và cá nhân hóa...", "img": "news5.jpg"},
+      {"title": "Gian hàng ảo phổ biến trên mạng xã hội", "desc": "Livestream bán hàng trở thành xu hướng cực hot năm 2025...", "img": "news6.jpg"}
+    ] %}
+
+    {% for news in news_list %}
+    <div class="col-md-4">
+      <div class="card news-card h-100">
+        <img src="{{ url_for('static', filename='images/' ~ news.img) }}" class="card-img-top news-img" alt="Ảnh tin tức">
+        <div class="card-body">
+          <h5 class="card-title">{{ news.title }}</h5>
+          <p class="card-text text-muted">{{ news.desc }}</p>
+          <a href="#" class="btn btn-outline-primary btn-sm">Xem chi tiết</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
