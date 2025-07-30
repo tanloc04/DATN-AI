@@ -81,13 +81,19 @@ def market_page():
                            suggested_items=suggested_items,
                            recently_viewed=recently_viewed_items,
                            selected_category = None,
-                           price_filter=price_filter
-                           )
+                           price_filter=price_filter)
 
 @app.route('/items')
 def item_list():
-    items = Item.query.all()
-    return render_template('item/list.html', items=items)
+    page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '', type=str)
+    per_page = 12
+    query = Item.query
+    if q:
+        query = query.filter(Item.name.ilike(f"%{q}%"))
+    pagination = query.order_by(Item.created_at.desc()).paginate(page=page, per_page=per_page)
+    items = pagination.items
+    return render_template('item/list.html', items=items, pagination=pagination)
 
 @app.route('/items/add', methods=['GET', 'POST'])
 def add_item():
@@ -389,8 +395,16 @@ def order_confirmation():
 
 @app.route('/categories')
 def category_list():
-    categories = Category.query.all()
-    return render_template('category/list.html', categories=categories)
+    page = request.args.get('page', 1, type=int)
+    search_query = request.args.get('search', '', type=str)
+    query = Category.query
+    if search_query:
+        query = query.filter(Category.name.ilike(f'%{search_query}%'))
+    per_page = 10
+    pagination = query.order_by(Category.name).paginate(page=page, per_page=per_page)
+    categories = pagination.items
+    return render_template('category/list.html', categories=categories,
+                           pagination=pagination, search_query=search_query)
 
 @app.route('/categories/add', methods=['GET', 'POST'])
 def add_category():
@@ -518,19 +532,34 @@ def recommend():
     except Exception as e:
         return f"Lỗi gợi ý: {str(e)}"
 
-@app.route('/categories/<int:category_id>')
-@login_required
-def category_detail(category_id):
-    category = Category.query.get_or_404(category_id)
-    items = Item.query.filter_by(category_id=category.id).all()
-    categories = Category.query.all()
-
-    return render_template('user/market.html', items=items, categories=categories, selected_category=category)
+@app.route('/category/<string:category_name>')
+def products_by_category(category_name):
+    price_filter = request.args.get('price_filter')
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    category = Category.query.filter_by(name=category_name).first_or_404()
+    query = Item.query.filter_by(category_id=category.id)
+    if price_filter == 'asc':
+        query = query.order_by(Item.price.asc())
+    elif price_filter == 'desc':
+        query = query.order_by(Item.price.desc())
+    pagination = query.paginate(page=page, per_page=per_page)
+    items = pagination.items
+    return render_template('user/category_products.html', items=items, category_name=category.name,
+                           pagination=pagination, price_filter=price_filter)
 
 @app.route('/admin/users')
 def manage_users():
-    users = User.query.all()
-    return render_template('admin/user_management.html', users=users)
+    page = request.args.get('page', 1, type=int)
+    keyword = request.args.get('q', '', type=str).strip()
+    query = User.query
+    if keyword:
+        query = query.filter(
+            (User.username.ilike(f'%{keyword}%')) |
+            (User.email.ilike(f'%{keyword}%'))
+        )
+    users = query.order_by(User.username).paginate(page=page, per_page=10)
+    return render_template('admin/user_management.html', users=users, keyword=keyword)
 
 @app.route('/admin/users/toggle_status/<int:user_id>', methods=['POST'])
 def toggle_user_status(user_id):
@@ -600,7 +629,7 @@ def search_product():
         query = query.order_by(Item.price.asc())
     elif sort == 'price_desc':
         query = query.order_by(Item.price.desc())
-    pagination = query.paginate(page=page, per_page=per_page)
+    pagination = query.paginate(page=page, per_page=12)
     items = pagination.items
     categories = Category.query.all()
     return render_template('user/search.html', keyword=keyword, items=items, sort=sort,

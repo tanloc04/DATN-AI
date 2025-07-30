@@ -121,7 +121,7 @@
   <div class="row row-cols-2 row-cols-md-5 g-3">
     {% for category in featured_categories %}
     <div class="col">
-      <a href="{{ url_for('category_detail', category_id=category.id) }}" style="text-decoration: none;">
+      <a href="{{ url_for('products_by_category', category_name=category.name) }}" style="text-decoration: none;">
         <div class="category-card gradient-{{ loop.index }}">
           {{ category.name }}
         </div>

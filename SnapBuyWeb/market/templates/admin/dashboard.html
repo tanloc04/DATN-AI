@@ -164,7 +164,7 @@
 <div class="sidebar" id="sidebar">
     <h5 class="px-3">Admin Menu</h5>
     <a href="{{ url_for('item_list') }}" class="{% if 'item' in request.path %}active{% endif %}"><i class="bi bi-box-seam me-2"></i>Item</a>
-    <a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.path %}active{% endif %}"><i class="bi bi-people me-2"></i>User</a>
+    <a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.path %}active{% endif %}"><i class="bi bi-people me-2"></i>User Management</a>
     <a href="{{ url_for('category_list') }}" class="{% if 'category' in request.path %}active{% endif %}"><i class="bi bi-tags me-2"></i>Category</a>
     <a href="#" class="{% if 'import' in request.path %}active{% endif %}"><i class="bi bi-upload me-2"></i>Import Data</a>
     <a href="{{ url_for('analyze_page') }}" class="{% if 'analyze' in request.path %}active{% endif %}"><i class="bi bi-graph-up me-2"></i>Analyze</a>

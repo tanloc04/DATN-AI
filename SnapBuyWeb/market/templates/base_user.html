@@ -115,19 +115,19 @@
     <i class="bi bi-box-seam me-1"></i> Sản phẩm
   </a>
   <ul class="dropdown-menu dropdown-menu-lg-end shadow-sm p-2" aria-labelledby="productDropdown" style="min-width: 240px;">
-    <li><a class="dropdown-item d-flex align-items-center" href="#">
-      <i class="bi bi-phone me-2 text-info"></i> Đồ điện tử
+    <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('products_by_category', category_name='Thời trang') }}">
+      <i class="bi bi-eyeglasses me-2 text-info"></i> Thời trang
     </a></li>
-    <li><a class="dropdown-item d-flex align-items-center" href="#">
+    <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('products_by_category', category_name='Đồ gia dụng') }}">
       <i class="bi bi-house-door me-2 text-success"></i> Đồ gia dụng
     </a></li>
-    <li><a class="dropdown-item d-flex align-items-center" href="#">
+    <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('products_by_category', category_name='Đồ chơi') }}">
       <i class="bi bi-controller me-2 text-warning"></i> Đồ chơi
     </a></li>
-    <li><a class="dropdown-item d-flex align-items-center" href="#">
+    <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('products_by_category', category_name='Phụ kiện') }}">
       <i class="bi bi-headphones me-2 text-secondary"></i> Phụ kiện
     </a></li>
-    <li><a class="dropdown-item d-flex align-items-center" href="#">
+    <li><a class="dropdown-item d-flex align-items-center" href="{{ url_for('products_by_category', category_name='Sách') }}">
       <i class="bi bi-book me-2 text-warning"></i> Sách
     </a></li>
   </ul>
@@ -260,6 +260,7 @@
       <div class="col-md-4 mb-3">
         <h6 class="text-uppercase">Email</h6>
         <p class="mb-0"><i class="bi bi-envelope me-2"></i>lehothanhtai@gmail.com</p>
+        <p class="mb-0"><i class="bi bi-envelope me-2"></i>nguyentanloc@gmail.com</p>
       </div>
       <div class="col-md-4 mb-3">
         <h6 class="text-uppercase">Giờ làm việc</h6>
