@@ -99,9 +99,18 @@
             padding: 6px 12px;
             border-radius: 4px;
         }
+
+        .social-icon {
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            color: #ffc107;
+            transform: scale(1.2);
+        }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100 bg-light">
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
@@ -137,15 +146,6 @@
                         </ul>
                     </li>
                 </ul>
-            {% else %}
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login_admin') }}"><i class="bi bi-door-open"></i> Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register_admin') }}"><i class="bi bi-person-plus"></i> Register</a>
-                        </li>
-                    </ul>
             {% endif %}
         </div>
     </div>
@@ -155,18 +155,17 @@
 <div class="sidebar" id="sidebar">
     <h5 class="px-3">Admin Menu</h5>
     <a href="{{ url_for('item_list') }}" class="{% if 'item' in request.path %}active{% endif %}"><i class="bi bi-box-seam me-2"></i>Item</a>
-    <a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.path %}active{% endif %}"><i class="bi bi-people me-2"></i>User</a>
+    <a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.path %}active{% endif %}"><i class="bi bi-people me-2"></i>User Management</a>
     <a href="{{ url_for('category_list') }}" class="{% if 'category' in request.path %}active{% endif %}"><i class="bi bi-tags me-2"></i>Category</a>
     <a href="#" class="{% if 'import' in request.path %}active{% endif %}"><i class="bi bi-upload me-2"></i>Import Data</a>
     <a href="{{ url_for('analyze_page') }}" class="{% if 'analyze' in request.path %}active{% endif %}"><i class="bi bi-graph-up me-2"></i>Analyze</a>
 </div>
 
+<main class="flex-grow-1">
 <!-- Main Content -->
 <div class="main-content" id="mainContent">
     <h2 class="text-center fw-bold mb-2" style="font-size: 2rem;">Welcome to Admin Dashboard</h2>
-</div>
-
-{% with messages = get_flashed_messages(with_categories=true) %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <div class="container mt-2">
             {% for category, message in messages %}
@@ -177,7 +176,43 @@
             {% endfor %}
         </div>
     {% endif %}
-{% endwith %}
+    {% endwith %}
+
+    <div class="row px-5 mb-4 text-white text-center">
+  <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-primary shadow">
+      <h5>Sản phẩm</h5>
+      <h4>{{ total_items }}</h4>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-success shadow">
+      <h5>Người dùng</h5>
+      <h4>{{ total_users }}</h4>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-warning shadow">
+      <h5>Đơn hàng</h5>
+      <h4>{{ total_orders }}</h4>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-danger shadow">
+      <h5>Đánh giá</h5>
+      <h4>{{ total_ratings }}</h4>
+    </div>
+  </div>
+  <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-info shadow">
+      <h5>Danh mục</h5>
+      <h4>{{ total_categories }}</h4>
+    </div>
+  </div>
+</div>
+
+</div>
+    </main>
 
 <script>
     function toggleSidebar() {
@@ -193,5 +228,52 @@
     }
 </script>
 
+    <main class="flex-fill" style="padding-bottom: 80px;">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+<footer class="bg-dark text-white pt-4 mt-auto border-top">
+  <div class="container">
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">
+      <div class="text-center text-md-start mb-2 mb-md-0">
+        <strong>Snapbuy</strong> &mdash; © 2025 All rights reserved.
+      </div>
+      <div class="d-flex justify-content-center gap-3">
+        <a href="https://github.com/tanloc04/DATN-AI" target="_blank" class="text-white social-icon">
+          <i class="bi bi-github fs-5"></i>
+        </a>
+        <a href="#" target="_blank" class="text-white social-icon">
+          <i class="bi bi-facebook fs-5"></i>
+        </a>
+        <a href="#" class="text-white social-icon">
+          <i class="bi bi-envelope-fill fs-5"></i>
+        </a>
+      </div>
+    </div>
+
+    <div class="row text-center text-md-start border-top pt-3">
+      <div class="col-md-4 mb-3">
+        <h6 class="text-uppercase">Liên hệ</h6>
+        <p class="mb-1"><i class="bi bi-person-fill me-2"></i>Nguyễn Tấn Lộc & Lê Hồ Thành Tài</p>
+        <p class="mb-1"><i class="bi bi-telephone-fill me-2"></i>0901 234 567</p>
+        <p class="mb-0"><i class="bi bi-geo-alt-fill me-2"></i>123 Đường Lê Lợi, Quận 1, TP.HCM</p>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h6 class="text-uppercase">Email</h6>
+        <p class="mb-0"><i class="bi bi-envelope me-2"></i>lehothanhtai@gmail.com</p>
+          <p class="mb-0"><i class="bi bi-envelope me-2"></i>nguyentanloc@gmail.com</p>
+      </div>
+      <div class="col-md-4 mb-3">
+        <h6 class="text-uppercase">Giờ làm việc</h6>
+        <p class="mb-0"><i class="bi bi-clock me-2"></i>Thứ 2 - Thứ 6: 8h - 17h</p>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
 </body>
+
 </html>

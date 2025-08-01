@@ -15,15 +15,37 @@ import pickle
 import os
 import pandas as pd
 from datetime import datetime, timedelta
+from functools import wraps
+from werkzeug.security import generate_password_hash
+from sqlalchemy import or_
 
 tag_bp = Blueprint('tag', __name__, url_prefix='/tags')
 brand_bp = Blueprint('brand', __name__, url_prefix='/brands')
 
-@app.route('/')
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated:
+            return redirect(url_for('login_admin'))
+        elif session.get('role') != 'admin':
+            return redirect(url_for('market_page'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/admin/dashboard')
 @admin_required
 def dashboard_page():
-    return render_template('admin/dashboard.html')
+    total_items = Item.query.count()
+    total_users = User.query.count()
+    total_orders = Order.query.count()
+    total_ratings = Rating.query.count()
+    total_categories = Category.query.count()
+    return render_template('admin/dashboard.html',
+                           total_items=total_items,
+                           total_users=total_users,
+                           total_orders=total_orders,
+                           total_ratings=total_ratings,
+                           total_categories=total_categories)
 
 @app.route('/admin/revenue_data')
 @admin_required
@@ -48,17 +70,42 @@ def revenue_data():
 def analyze_page():
     return render_template('admin/analyze.html')
 
+@app.route('/')
 @app.route('/market')
 def market_page():
-    items = Item.query.all()
     categories = Category.query.all()
-    return render_template('user/market.html', items=items, categories=categories)
+    featured_categories = categories[:10]
+    price_filter = request.args.get('price_filter')
+    query = Item.query
+    if price_filter == 'asc':
+        query = query.order_by(Item.price.asc())
+    elif price_filter == 'desc':
+        query = query.order_by(Item.price.desc())
+    items = query.limit(16).all()
+    suggested_items = Item.query.order_by(Item.id.desc()).limit(8).all()
+    recently_viewed_ids = session.get('viewed_items', [])
+    recently_viewed_items = Item.query.filter(Item.id.in_(recently_viewed_ids)).all()
+    id_order = {id_: i for i, id_ in enumerate(recently_viewed_ids)}
+    recently_viewed_items.sort(key=lambda x: id_order.get(x.id, 0))
+    return render_template('user/market.html', items=items, categories=categories,
+                           featured_categories=featured_categories,
+                           suggested_items=suggested_items,
+                           recently_viewed=recently_viewed_items,
+                           selected_category = None,
+                           price_filter=price_filter)
 
 @app.route('/items')
 @admin_required
 def item_list():
-    items = Item.query.all()
-    return render_template('item/list.html', items=items)
+    page = request.args.get('page', 1, type=int)
+    q = request.args.get('q', '', type=str)
+    per_page = 12
+    query = Item.query
+    if q:
+        query = query.filter(Item.name.ilike(f"%{q}%"))
+    pagination = query.order_by(Item.created_at.desc()).paginate(page=page, per_page=per_page)
+    items = pagination.items
+    return render_template('item/list.html', items=items, pagination=pagination)
 
 @app.route('/items/add', methods=['GET', 'POST'])
 @admin_required
@@ -261,9 +308,6 @@ def login_admin():
 
 @app.route('/user/register', methods=['GET', 'POST'])
 def register_user():
-    if current_user.is_authenticated:
-        flash('You must log out of your current account if you want to register a new account', 'info')
-        return redirect(url_for('market_page'))
     form = UserRegisterForm()
     if form.validate_on_submit():
         user_to_create = User(username=form.username.data,
@@ -277,8 +321,8 @@ def register_user():
 
 @app.route('/user/login', methods=['GET', 'POST'])
 def login_by_user():
-    if current_user.is_authenticated:
-        flash('You are already logged in', 'info')
+    if current_user.is_authenticated and session.get('role') == 'user':
+        flash('Bạn đã đăng nhập rồi.', 'info')
         return redirect(url_for('market_page'))
     form = UserLoginForm()
     if form.validate_on_submit():
@@ -382,7 +426,6 @@ def view_cart():
     return render_template('user/cart.html', cart_items=cart_details, total_price=total_price)
 
 @app.route('/remove_from_cart/<int:item_id>')
-@login_required
 def remove_from_cart(item_id):
     if session.get('role') != 'user':
         flash('Chỉ người dùng mới có thể xóa sản phẩm khỏi giỏ hàng.', 'warning')
@@ -399,7 +442,6 @@ def remove_from_cart(item_id):
     return redirect(url_for('view_cart'))
 
 @app.route('/increase_quantity/<int:item_id>')
-@login_required
 def increase_quantity(item_id):
     if session.get('role') != 'user':
         flash('Chỉ người dùng mới có thể thay đổi số lượng.', 'warning')
@@ -416,7 +458,6 @@ def increase_quantity(item_id):
     return redirect(url_for('view_cart'))
 
 @app.route('/decrease_quantity/<int:item_id>')
-@login_required
 def decrease_quantity(item_id):
     if session.get('role') != 'user':
         flash('Chỉ người dùng mới có thể thay đổi số lượng.', 'warning')
@@ -487,8 +528,16 @@ def order_confirmation():
 @login_required
 
 def category_list():
-    categories = Category.query.all()
-    return render_template('category/list.html', categories=categories)
+    page = request.args.get('page', 1, type=int)
+    search_query = request.args.get('search', '', type=str)
+    query = Category.query
+    if search_query:
+        query = query.filter(Category.name.ilike(f'%{search_query}%'))
+    per_page = 10
+    pagination = query.order_by(Category.name).paginate(page=page, per_page=per_page)
+    categories = pagination.items
+    return render_template('category/list.html', categories=categories,
+                           pagination=pagination, search_query=search_query)
 
 @app.route('/admin/categories/add', methods=['GET', 'POST'])
 @login_required
@@ -562,6 +611,11 @@ def rate_order(order_id):
 
     if order.user_id != current_user.id:
         flash('You are not authorized to rate this order.', 'danger')
+        return redirect(url_for('view_orders'))
+
+    existing_rating = Rating.query.filter_by(order_id=order.id, user_id=current_user.id).first()
+    if existing_rating:
+        flash('Bạn đã đánh giá đơn hàng này rồi.', 'info')
         return redirect(url_for('view_orders'))
 
     form = RatingForm()
@@ -719,8 +773,16 @@ def category_detail(category_id):
 @app.route('/admin/users')
 @login_required
 def manage_users():
-    users = User.query.all()
-    return render_template('admin/user_management.html', users=users)
+    page = request.args.get('page', 1, type=int)
+    keyword = request.args.get('q', '', type=str).strip()
+    query = User.query
+    if keyword:
+        query = query.filter(
+            (User.username.ilike(f'%{keyword}%')) |
+            (User.email.ilike(f'%{keyword}%'))
+        )
+    users = query.order_by(User.username).paginate(page=page, per_page=10)
+    return render_template('admin/user_management.html', users=users, keyword=keyword)
 
 @app.route('/admin/users/toggle_status/<int:user_id>', methods=['POST'])
 @login_required
@@ -771,3 +833,60 @@ def admin_profile():
             flash('Current password is incorrect.', 'danger')
 
     return render_template('admin/profile.html')
+
+@app.route('/user/search')
+def search_product():
+    keyword = request.args.get("q", "").strip()
+    sort = request.args.get('sort', '')
+    category_id = request.args.get('category', type=int)
+    page = request.args.get('page', 1, type=int)
+    per_page = 8
+    query = Item.query
+    if keyword:
+        query = query.filter(or_(
+            Item.name.ilike(f"%{keyword}%"),
+            Item.description.ilike(f"%{keyword}%")
+        ))
+    if category_id:
+        query = query.filter_by(category_id=category_id)
+
+    if sort == 'price_asc':
+        query = query.order_by(Item.price.asc())
+    elif sort == 'price_desc':
+        query = query.order_by(Item.price.desc())
+    pagination = query.paginate(page=page, per_page=12)
+    items = pagination.items
+    categories = Category.query.all()
+    return render_template('user/search.html', keyword=keyword, items=items, sort=sort,
+                           selected_category=category_id, categories=categories, pagination=pagination)
+
+@app.route('/user/profile', methods=['GET', 'POST'])
+@login_required
+def user_profile():
+    if session.get('role') != 'user':
+        flash("Bạn phải đăng nhập mới có quyền truy cập trang này", "danger")
+        return redirect(url_for('market_page'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if not new_password or not confirm_password:
+            flash("Vui lòng nhập đầy đủ thông tin mật khẩu.", "warning")
+        elif new_password != confirm_password:
+            flash("Mật khẩu không khớp.", "danger")
+        else:
+            current_user.password = generate_password_hash(new_password)
+            db.session.commit()
+            flash("Cập nhật mật khẩu thành công!", "success")
+            return redirect(url_for('user_profile'))
+
+    return render_template('/user/user_profile.html', user=current_user)
+
+@app.route("/about_us")
+def about_us():
+    return render_template("user/about_us.html")
+
+@app.route('/news')
+def news_page():
+    return render_template('/user/news.html')
