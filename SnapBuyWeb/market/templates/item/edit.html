@@ -12,6 +12,7 @@
                 {{ form.hidden_tag() }}
                 <div class="row g-3">
                     <div class="col-md-6">
+                        <!-- Name -->
                         <div class="mb-3">
                             {{ form.name.label(class="form-label fw-bold") }}
                             {{ form.name(class="form-control border-primary", placeholder="Enter item name") }}
@@ -23,6 +24,8 @@
                                 </div>
                             {% endif %}
                         </div>
+
+                        <!-- Price -->
                         <div class="mb-3">
                             {{ form.price.label(class="form-label fw-bold") }}
                             <div class="input-group">
@@ -37,8 +40,24 @@
                                 </div>
                             {% endif %}
                         </div>
+
+                        <!-- Brand -->
+                        <div class="mb-3">
+                            {{ form.brand_id.label(class="form-label fw-bold") }}
+                            {{ form.brand_id(class="form-select border-primary") }}
+                            {% if form.brand_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.brand_id.errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
                     </div>
+
                     <div class="col-md-6">
+                        <!-- Image URL -->
                         <div class="mb-3">
                             {{ form.image_url.label(class="form-label fw-bold") }}
                             {{ form.image_url(class="form-control border-primary", placeholder="Enter image URL") }}
@@ -50,6 +69,8 @@
                                 </div>
                             {% endif %}
                         </div>
+
+                        <!-- Description -->
                         <div class="mb-3">
                             {{ form.description.label(class="form-label fw-bold") }}
                             {{ form.description(class="form-control border-primary", rows="4", placeholder="Enter product description...") }}
@@ -61,9 +82,44 @@
                                 </div>
                             {% endif %}
                         </div>
+
+                        <!-- Category -->
+                        <div class="mb-3">
+                            {{ form.category_id.label(class="form-label fw-bold") }}
+                            {{ form.category_id(class="form-select border-primary") }}
+                            {% if form.category_id.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.category_id.errors %}
+                                        {{ error }}<br>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
-                <p class="text-secondary"><strong>Created:</strong> {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+                <!-- Tags -->
+                <div class="mb-3">
+                    {{ form.tag_ids.label(class="form-label fw-bold d-block") }}
+                    {% for subfield in form.tag_ids %}
+                        <div class="form-check form-check-inline">
+                            {{ subfield(class="form-check-input") }}
+                            {{ subfield.label(class="form-check-label") }}
+                        </div>
+                    {% endfor %}
+                    {% if form.tag_ids.errors %}
+                        <div class="text-danger mt-2">
+                            {% for error in form.tag_ids.errors %}
+                                {{ error }}<br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <p class="text-secondary">
+                    <strong>Created:</strong> {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                </p>
+
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ url_for('item_list') }}" class="btn btn-secondary btn-lg shadow-sm">
                         <i class="bi bi-arrow-left"></i> Back to List

@@ -1,0 +1,16 @@
+{% extends 'base_admin.html' %}
+{% block title %}Add Brand{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-success">Add Brand</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label fw-bold") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        {{ form.submit(class="btn btn-success") }}
+        <a href="{{ url_for('list_brands') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

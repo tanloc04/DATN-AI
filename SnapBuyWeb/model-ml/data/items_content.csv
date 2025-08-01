@@ -1,0 +1,11 @@
+id,name,description,category,brand
+1,Laptop ABC,"Laptop 14 inch với RAM 8GB và SSD 256GB",Electronics,Dell
+2,Laptop Pro X,"Laptop hiệu năng cao với màn hình Full HD, RAM 16GB, SSD 512GB",Electronics,Asus
+3,Áo Thun Unisex,"Áo thun cotton thoáng mát co giãn 4 chiều",Fashion,Uniqlo
+4,Áo Hoodie Nam,"Áo hoodie nỉ bông, giữ ấm tốt, thiết kế trẻ trung",Fashion,LocalBrand
+5,Smartphone X5,"Điện thoại màn hình AMOLED, chip Snapdragon, pin 5000mAh",Electronics,Xiaomi
+6,Smartphone Z,"Camera AI, sạc nhanh 67W, bộ nhớ trong 128GB",Electronics,Samsung
+7,Giày Sneaker ABC,"Giày sneaker phong cách thể thao, đế cao su chống trơn",Footwear,Nike
+8,Sandal Nữ Summer,"Dép sandal đế thấp, quai da mềm, thích hợp mùa hè",Footwear,Bitis
+9,Tai nghe Bluetooth,"Tai nghe không dây, âm thanh vòm, pin 20h",Electronics,Sony
+10,Balo Học Sinh,"Balo chống nước, nhiều ngăn, đệm lưng thoáng khí",Accessories,SimpleCarry

@@ -39,7 +39,10 @@
                   <a class="nav-link" href="#">Item</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('recommend.recommend') }}">Gợi ý sản phẩm</a>
+                    <a class="nav-link" href="{{ url_for('recommend') }}">Gợi ý sản phẩm bằng collaborative</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('recommend_content') }}">Gợi ý sản phẩm bằng content-based</a>
                 </li>
                 {% if current_user.is_authenticated and session['role'] == 'user' %}
                 <li class="nav-item">
