@@ -5,39 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/decorators.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/brand/add.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/brand/edit.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/brand/list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/tag/add.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/tag/edit.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/tag/list.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/compare_recommendations.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/MIND-small/behaviors.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/MIND-small/news.tsv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/data/items_content.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/mind_to_flask.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/models/content_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/models/mind_behavior_model.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/models/recommendation.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/models/surprise_model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/DATN-AI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/DATN-AI.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/model-ml/data/ratings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/data/ratings.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/model-ml/model.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/model-ml/train-model.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/model-ml/train-model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/model.pkl" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
