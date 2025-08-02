@@ -108,12 +108,3 @@ body {
         margin-bottom: 0;
     }
 }
-
-.social-icon {
-  transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.social-icon:hover {
-  color: #ffc107;
-  transform: scale(1.2);
-}

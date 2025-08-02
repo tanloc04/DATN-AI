@@ -2,76 +2,16 @@
 {% block title %}Xác nhận đơn hàng{% endblock %}
 
 {% block content %}
-<style>
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .confirmation-card {
-    max-width: 600px;
-    margin: 0 auto;
-    animation: fadeIn 0.6s ease-in-out;
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 40px 30px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    text-align: center;
-  }
-
-  .checkmark-circle {
-    width: 90px;
-    height: 90px;
-    background: #e6f4ea;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px auto;
-    color: #28a745;
-    font-size: 40px;
-  }
-
-  .confirmation-card h2 {
-    font-weight: 700;
-    color: #28a745;
-  }
-
-  .confirmation-card p {
-    color: #555;
-    margin-top: 10px;
-    font-size: 1.05rem;
-  }
-
-  .confirmation-card .btn {
-    padding: 10px 24px;
-    font-size: 1rem;
-    border-radius: 8px;
-    font-weight: 500;
-  }
-
-  .confirmation-card .btn-primary {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-  }
-
-  .confirmation-card .btn-secondary {
-    background-color: #6c757d;
-    border-color: #6c757d;
-  }
-</style>
-
-<div class="container mt-5">
-  <div class="confirmation-card">
-    <div class="checkmark-circle">
-      <i class="bi bi-check2-circle"></i>
+    <div class="container mt-5">
+        <div class="card text-center p-5 shadow-sm" style="max-width: 600px; margin: 0 auto; animation: fadeIn 0.5s ease;">
+            <div class="card-body">
+                <h2 class="text-success fw-bold">Đơn hàng đã được đặt thành công!</h2>
+                <p class="card-text mt-3">Cảm ơn bạn đã đặt hàng! Đơn hàng của bạn đã được ghi nhận và sẽ được xử lý sớm.</p>
+                <div class="mt-4">
+                    <a href="{{ url_for('market_page') }}" class="btn btn-primary btn-lg me-2">Tiếp tục mua sắm</a>
+                    <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-lg">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
     </div>
-    <h2>Đặt hàng thành công!</h2>
-    <p>Cảm ơn bạn đã mua sắm tại SnapBuy. Đơn hàng của bạn đã được ghi nhận và sẽ được xử lý trong thời gian sớm nhất.</p>
-    <div class="mt-4 d-flex justify-content-center gap-3">
-      <a href="{{ url_for('market_page') }}" class="btn btn-primary">Tiếp tục mua sắm</a>
-      <a href="{{ url_for('logout') }}" class="btn btn-secondary">Đăng xuất</a>
-    </div>
-  </div>
-</div>
 {% endblock %}
