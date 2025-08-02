@@ -61,18 +61,6 @@
                                 </div>
                             {% endif %}
                         </div>
-                        <div class="form-group">
-                            {{ form.brand_id.label }}<br>
-                            {{ form.brand_id(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.tag_ids.label }}<br>
-                            {% for subfield in form.tag_ids %}
-                                <label class="checkbox-inline">
-                                    {{ subfield() }} {{ subfield.label.text }}
-                                </label><br>
-                            {% endfor %}
-                        </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-between mt-4">

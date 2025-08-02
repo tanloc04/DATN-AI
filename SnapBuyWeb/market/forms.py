@@ -1,11 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, SelectMultipleField
-from wtforms.widgets import ListWidget, CheckboxInput
+from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import Length, Email, EqualTo, DataRequired, ValidationError, URL
-from market.models import User
+from market.models import Admin, User
 from wtforms import FloatField, TextAreaField, IntegerField
 from wtforms.validators import NumberRange
-
 
 class AdminRegisterForm(FlaskForm):
     username = StringField(label='Username', validators=[Length(min=4, max=30), DataRequired()])
@@ -15,13 +13,13 @@ class AdminRegisterForm(FlaskForm):
     submit = SubmitField(label='Register')
 
     def validate_username(self, username_to_check):
-        user = User.query.filter_by(username=username_to_check.data).first()
-        if user:
+        admin = Admin.query.filter_by(username=username_to_check.data).first()
+        if admin:
             raise ValidationError('Username already exists. Please try a different one.')
 
     def validate_email(self, email_to_check):
-        user = User.query.filter_by(email=email_to_check.data).first()
-        if user:
+        admin = Admin.query.filter_by(email=email_to_check.data).first()
+        if admin:
             raise ValidationError('Email already registered. Try another one.')
 
 class AdminLoginForm(FlaskForm):
@@ -37,9 +35,6 @@ class ItemForm(FlaskForm):
     submit = SubmitField(label='Save')
 
     category_id = SelectField('Category', coerce=int, validators=[DataRequired()])
-    brand_id = SelectField('Brand', coerce=int)
-    tag_ids = SelectMultipleField('Tags', coerce=int, option_widget=CheckboxInput(),
-                                  widget=ListWidget(prefix_label=False))
 
 class CategoryForm(FlaskForm):
     name = StringField('Category Name', validators=[
@@ -80,11 +75,3 @@ class RatingForm(FlaskForm):
     rating = IntegerField('Rating (1-5)', validators=[DataRequired(), NumberRange(min=1, max=5)])
     review = TextAreaField('Comment')
     submit = SubmitField('Submit Review')
-
-class TagForm(FlaskForm):
-    name = StringField('Tag Name', validators=[DataRequired()])
-    submit = SubmitField('Save')
-
-class BrandForm(FlaskForm):
-    name = StringField('Brand Name', validators=[DataRequired()])
-    submit = SubmitField('Save')
