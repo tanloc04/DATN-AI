@@ -9,7 +9,7 @@ import os
 from datetime import datetime, timedelta
 from functools import wraps
 from werkzeug.security import generate_password_hash
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 recommend_bp = Blueprint('recommend', __name__)
 
@@ -237,7 +237,22 @@ def product_detail(item_id):
         viewed.remove(item_id)
     viewed.insert(0, item_id)
     session['viewed_items'] = viewed[:4]
-    return render_template('item/detail.html', item=item)
+    star_filter = request.args.get('stars', type=int)
+    query = Rating.query.filter_by(item_id=item_id)
+    if star_filter and 1 <= star_filter <= 5:
+        query = query.filter(Rating.rating == star_filter)
+    total_reviews = query.count()
+    page = request.args.get('page', 1, type=int)
+    per_page = 5
+    pagination = query.order_by(Rating.created_at.desc()).paginate(page=page, per_page=per_page)
+    reviews = pagination.items
+    avg_rating = db.session.query(func.avg(Rating.rating)).filter_by(item_id=item_id).scalar()
+    avg_rating = round(avg_rating, 1) if avg_rating else None
+    has_rated = False
+    if current_user.is_authenticated:
+        has_rated = Rating.query.filter_by(user_id=current_user.id, item_id=item_id).first() is not None
+    return render_template('item/detail.html', item=item, reviews=reviews, avg_rating=avg_rating,
+                           has_rated=has_rated, total_reviews=total_reviews, pagination=pagination, star_filter=star_filter)
 
 @app.route('/add_to_cart/<int:item_id>', methods=['POST'])
 @login_required
