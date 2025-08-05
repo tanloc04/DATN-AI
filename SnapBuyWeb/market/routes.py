@@ -97,51 +97,54 @@ def item_list():
 
 @app.route('/items/add', methods=['GET', 'POST'])
 def add_item():
-    form = ItemForm()
-    form.category_id.choices = [(c.id, c.name) for c in Category.query.all()]
-    if form.validate_on_submit():
-        item = Item(
-            name=form.name.data,
-            price=form.price.data,
-            description=form.description.data,
-            image_url=form.image_url.data,
-            category_id=form.category_id.data
-        )
+    if request.method == 'POST':
+        name = request.form.get('name')
+        price = request.form.get('price')
+        description = request.form.get('description')
+        image_url = request.form.get('image_url')
+        category_id = request.form.get('category_id')
         try:
-            db.session.add(item)
+            new_item = Item(
+                name=name,
+                price=price,
+                description=description,
+                image_url=image_url,
+                category_id=category_id
+            )
+            db.session.add(new_item)
             db.session.commit()
-            flash(f'Item "{item.name}" has been added successfully!', 'success')
+            flash('Thêm sản phẩm thành công!', 'success')
             return redirect(url_for('item_list'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Error adding item: {str(e)}', 'danger')
-
-    return render_template('item/add.html', form=form)
+            flash(f'Lỗi: {str(e)}', 'danger')
+    categories = Category.query.all()
+    return render_template('item/add.html', categories=categories)
 
 @app.route('/items/edit/<int:id>', methods=['GET', 'POST'])
 def edit_item(id):
     item = Item.query.get_or_404(id)
-    form = ItemForm(obj=item)
+    categories = Category.query.all()
 
-    if request.method == 'GET':
-        form.category_id.data = item.category_id
-
-    if form.validate_on_submit():
-        item.name = form.name.data
-        item.price = form.price.data
-        item.description = form.description.data
-        item.image_url = form.image_url.data
-        item.category_id = form.category_id.data
-
+    if request.method == 'POST':
+        item.name = request.form.get('name')
+        item.price = request.form.get('price')
+        item.description = request.form.get('description')
+        item.image_url = request.form.get('image_url')
+        category_id = request.form.get('category_id')
+        try:
+            item.category_id = int(category_id) if category_id else None
+        except ValueError:
+            flash('Invalid category selected.', 'danger')
+            return render_template('item/edit.html', item=item, categories=categories)
         try:
             db.session.commit()
-            flash(f'Item "{item.name}" has been updated successfully!', 'success')
+            flash(f'Sản phẩm "{item.name}" đã được cập nhật thành công!', 'success')
             return redirect(url_for('item_list'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Error updating item: {str(e)}', 'danger')
-
-    return render_template('item/edit.html', form=form, item=item)
+            flash(f'Đã xảy ra lỗi khi cập nhật: {str(e)}', 'danger')
+    return render_template('item/edit.html', item=item, categories=categories)
 
 @app.route('/items/delete/<int:id>')
 def delete_item(id):
@@ -423,17 +426,26 @@ def category_list():
 
 @app.route('/categories/add', methods=['GET', 'POST'])
 def add_category():
-    form = CategoryForm()
-    if form.validate_on_submit():
-        new_category = Category(
-            name = form.name.data,
-            description = form.description.data
-        )
-        db.session.add(new_category)
-        db.session.commit()
-        flash('Danh mục mới đã được thêm!', 'success')
-        return redirect(url_for('category_list'))
-    return render_template('category/add.html', form=form)
+    errors = {}
+    if request.method == 'POST':
+        name = request.form.get('name')
+        description = request.form.get('description')
+
+        if not name:
+            errors['name'] = ['Tên danh mục không được để trống.']
+        elif Category.query.filter_by(name=name).first():
+            errors['name'] = ['Tên danh mục đã tồn tại.']
+        if not errors:
+            new_category = Category(name=name, description=description)
+            try:
+                db.session.add(new_category)
+                db.session.commit()
+                flash('Danh mục mới đã được thêm thành công!', 'success')
+                return redirect(url_for('list_categories'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Lỗi khi thêm danh mục: {str(e)}', 'danger')
+    return render_template('category/add.html', errors=errors)
 
 @app.route('/categories/edit/<int:id>', methods=['GET', 'POST'])
 def edit_category(id):
