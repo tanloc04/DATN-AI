@@ -2,52 +2,50 @@
 
 {% block content %}
 <style>
-  .section-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
+    .product-card {
+      max-width: 280px;
+      margin: auto;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
 
-  .product-card {
-    max-width: 100%;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-  }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
 
-  .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-  }
+    .product-img-container {
+        height: 160px;
+        overflow: hidden;
+        text-align: center;
+        padding: 8px;
+        background: #f8f9fa;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+    }
 
-  .product-img-container {
-    height: 160px;
-    overflow: hidden;
-    text-align: center;
-    padding: 8px;
-    background: #f8f9fa;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-  }
+    .product-img-container img {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
 
-  .product-img-container img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
-  }
+    .product-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 180px;
+        text-align: center;
+    }
 
-  .product-body {
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 180px;
-    text-align: center;
-  }
+    .product-body h6 {
+        font-weight: bold;
+    }
 
+<<<<<<< HEAD
   .product-price {
     color: #198754;
     font-size: 0.95rem;
@@ -173,29 +171,51 @@
     background-color: #0056b3;
 }
 
+=======
+    .product-price {
+        color: #198754;
+        font-size: 0.95rem;
+        margin: 4px 0;
+    }
+>>>>>>> parent of 3336b50 (Merge branch 'tai' into restore-models)
 </style>
-<main class="market-background">
-  <div class="container market-container">
-<div class="container mt-4">
-
-  <!-- Danh mục nổi bật -->
-  {% set color_classes = ['bg-color-0', 'bg-color-1', 'bg-color-2', 'bg-color-3', 'bg-color-4',
-                        'bg-color-5', 'bg-color-6', 'bg-color-7', 'bg-color-8', 'bg-color-9'] %}
 
 <div class="container mt-4">
-  <h2 class="section-title">Danh mục nổi bật</h2>
-  <div class="row row-cols-2 row-cols-md-5 g-3">
-    {% for category in featured_categories %}
-    <div class="col">
-      <a href="{{ url_for('products_by_category', category_name=category.name) }}" style="text-decoration: none;">
-        <div class="category-card gradient-{{ loop.index }}">
-          {{ category.name }}
+    <h4 class="mb-3">Danh Mục Sản Phẩm</h4>
+    <div class="row mb-4">
+        {% for category in categories %}
+        <div class="col-md-3 col-sm-6 mb-2">
+            <a href="{{ url_for('category_detail', category_id=category.id) }}" class="btn {% if selected_category and category.id == selected_category.id %}btn-primary{% else %}btn-outline-secondary{% endif %} w-100">{{ category.name }}</a>
         </div>
-      </a>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
+
+    <h2 class="mb-4 text-center">Sản phẩm hiện có</h2>
+    <div class="row justify-content-center">
+        {% for item in items %}
+        <div class="col-md-4 mb-4 d-flex align-items-stretch">
+            <div class="card product-card w-100">
+                <div class="product-img-container">
+                    <img src="{{ item.image_url }}" alt="{{ item.name }}">
+                </div>
+                <div class="product-body">
+                    <div>
+                        <h6 class="card-title mb-1">{{ item.name }}</h6>
+                        <p class="card-text small text-truncate" title="{{ item.description }}">
+                            {{ item.description }}
+                        </p>
+                        <p class="product-price">
+                            {{ "{:,.0f}".format(item.price) }} đ
+                        </p>
+                    </div>
+                    <a href="{{ url_for('product_detail', item_id=item.id) }}" class="btn btn-sm btn-primary">Xem</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
+<<<<<<< HEAD
 
 
   <!-- Danh sách sản phẩm hiện có -->
@@ -301,4 +321,6 @@
 </div>
     </div>
 </main>
+=======
+>>>>>>> parent of 3336b50 (Merge branch 'tai' into restore-models)
 {% endblock %}

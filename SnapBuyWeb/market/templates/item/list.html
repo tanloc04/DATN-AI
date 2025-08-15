@@ -5,112 +5,38 @@
 {% endblock %}
 
 {% block content %}
-<style>
-  .card-hover:hover {
-    transform: translateY(-4px);
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  }
-
-  .truncate-description {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .pagination .page-link {
-    color: #0d6efd;
-  }
-
-  .pagination .active .page-link {
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-    color: #fff;
-  }
-</style>
-
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary fw-bold">Danh sách sản phẩm</h2>
-    <a href="{{ url_for('add_item') }}" class="btn btn-success btn-lg shadow-sm">
-      <i class="bi bi-plus-circle me-1"></i> Thêm mới
-    </a>
-  </div>
-
-  <!-- Tìm kiếm -->
-  <form class="input-group mb-4" method="GET" action="{{ url_for('item_list') }}">
-    <input type="text" class="form-control border-primary" name="q" placeholder="Tìm kiếm sản phẩm..."
-           value="{{ request.args.get('q', '') }}">
-    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Tìm</button>
-  </form>
-
-  {% if items %}
-    <div class="row g-4">
-      {% for item in items %}
-        <div class="col-lg-3 col-md-4 col-sm-6">
-          <div class="card h-100 shadow-sm border-0 card-hover">
-            <img src="{{ item.image_url if item.image_url else url_for('static', filename='images/placeholder.jpg') }}"
-                 class="card-img-top"
-                 alt="{{ item.name }}"
-                 style="height: 220px; object-fit: cover;">
-            <div class="card-body text-center">
-              <h5 class="card-title fw-bold">{{ item.name }}</h5>
-              <p class="text-muted mb-2">Giá: {{ "{:,.0f}".format(item.price) }} đ</p>
-              <p class="card-text text-secondary truncate-description" title="{{ item.description }}">{{ item.description }}</p>
-              <p class="text-muted small">Tạo lúc: {{ item.created_at.strftime('%d/%m/%Y') }}</p>
-            </div>
-            <div class="card-footer bg-light d-flex justify-content-between px-3 py-2">
-              <a href="{{ url_for('edit_item', id=item.id) }}" class="btn btn-outline-warning btn-sm w-100 me-1">
-                <i class="bi bi-pencil-square"></i> Sửa
-              </a>
-              <a href="{{ url_for('delete_item', id=item.id) }}"
-                 class="btn btn-outline-danger btn-sm w-100 ms-1"
-                 onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
-                <i class="bi bi-trash3"></i> Xóa
-              </a>
-            </div>
-          </div>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <h2 class="text-primary fw-bold">Danh sách sản phẩm</h2>
+            <a href="{{ url_for('add_item') }}" class="btn btn-success btn-lg shadow-sm" style="animation: fadeIn 0.5s ease;">+ Thêm mới</a>
         </div>
-      {% endfor %}
-    </div>
 
-    <!-- Phân trang -->
-    {% if pagination.pages > 1 %}
-    <nav class="mt-4 d-flex justify-content-center">
-      <ul class="pagination">
-        {% if pagination.has_prev %}
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('item_list', page=pagination.prev_num, q=request.args.get('q')) }}">&laquo;</a>
-          </li>
+        {% if items %}
+            <div class="row g-4" style="animation: fadeInUp 0.7s ease;">
+                {% for item in items %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card h-100 shadow-sm border-0 card-hover">
+                            <img src="{{ item.image_url if item.image_url else url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="{{ item.name }}" style="height: 250px; object-fit: cover;">
+                            <div class="card-body text-center">
+                                <h5 class="card-title fw-bold">{{ item.name }}</h5>
+                                <p class="text-muted mb-2">Price: ${{ item.price|float|round(2) }}</p>
+                                <p class="card-text text-secondary">{{ item.description|truncate(50, true)|default('-') }}</p>
+                                <p class="text-muted small">Created: {{ item.created_at.strftime('%Y-%m-%d') }}</p>
+                            </div>
+                            <div class="card-footer bg-transparent d-flex justify-content-between p-3">
+                                <a href="{{ url_for('edit_item', id=item.id) }}" class="btn btn-warning btn-sm"><i class="bi bi-pencil"></i> Sửa</a>
+                                <a href="{{ url_for('delete_item', id=item.id) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')"><i class="bi bi-trash"></i> Xóa</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="card text-center p-5 shadow-sm" style="animation: fadeIn 0.5s ease;">
+                <h4 class="text-muted">No items found</h4>
+                <p class="text-secondary">Start by adding your first item to the inventory.</p>
+                <a href="{{ url_for('add_item') }}" class="btn btn-primary btn-lg mt-3">Add New Item</a>
+            </div>
         {% endif %}
-
-        {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-          {% if p %}
-            <li class="page-item {% if p == pagination.page %}active{% endif %}">
-              <a class="page-link" href="{{ url_for('item_list', page=p, q=request.args.get('q')) }}">{{ p }}</a>
-            </li>
-          {% else %}
-            <li class="page-item disabled"><span class="page-link">...</span></li>
-          {% endif %}
-        {% endfor %}
-
-        {% if pagination.has_next %}
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('item_list', page=pagination.next_num, q=request.args.get('q')) }}">&raquo;</a>
-          </li>
-        {% endif %}
-      </ul>
-    </nav>
-    {% endif %}
-
-  {% else %}
-    <div class="card text-center p-5 shadow-sm">
-      <h4 class="text-muted">Không tìm thấy sản phẩm nào.</h4>
-      <p class="text-secondary">Hãy thử từ khóa khác hoặc thêm sản phẩm mới.</p>
-      <a href="{{ url_for('add_item') }}" class="btn btn-primary btn-lg mt-3">
-        <i class="bi bi-plus-circle me-1"></i> Thêm sản phẩm
-      </a>
     </div>
-  {% endif %}
-</div>
 {% endblock %}

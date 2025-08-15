@@ -1,180 +1,27 @@
 {% extends 'base_user.html' %}
-{% block title %}Chi tiết sản phẩm{% endblock %}
+
 {% block content %}
-
-<style>
-  .product-detail-card {
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
-
-  .product-image {
-    object-fit: cover;
-    max-height: 450px;
-    width: 100%;
-  }
-
-  .product-name {
-    font-size: 1.8rem;
-    font-weight: bold;
-  }
-
-  .product-price {
-    font-size: 1.5rem;
-    color: #28a745;
-    font-weight: 600;
-  }
-
-  .quantity-input {
-    width: 100px;
-    text-align: center;
-    margin: 0 auto;
-  }
-
-  .review-star {
-    color: #ffc107;
-    font-size: 1.2rem;
-  }
-
-  .review-box {
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  }
-</style>
-
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8 col-md-10">
-      <div class="card product-detail-card p-4 mb-5">
-        <img src="{{ item.image_url if item.image_url else url_for('static', filename='images/placeholder.jpg') }}" alt="{{ item.name }}" class="product-image rounded mb-4">
-
-        <div class="text-center">
-          <h2 class="product-name text-primary">{{ item.name }}</h2>
-          <p class="product-price mt-2">{{ "{:,.0f}".format(item.price) }} đ</p>
-
-          {% if avg_rating %}
-            <div class="mt-2">
-              <span class="text-warning">
-                {% for i in range(avg_rating|round(0, 'floor')|int) %}
-                  <i class="bi bi-star-fill"></i>
-                {% endfor %}
-                {% for i in range(5 - (avg_rating|round(0, 'floor')|int)) %}
-                  <i class="bi bi-star"></i>
-                {% endfor %}
-              </span>
-              <span class="text-muted">({{ avg_rating|round(1) }}/5)</span>
+    <div class="container mt-5">
+        <div class="card p-4 shadow-sm" style="max-width: 600px; margin: 0 auto;">
+            <img src="{{ item.image_url if item.image_url else url_for('static', filename='images/placeholder.jpg') }}" class="card-img-top" alt="{{ item.name }}" style="height: 300px; object-fit: cover;">
+            <div class="card-body text-center">
+                <h2 class="card-title text-primary">{{ item.name }}</h2>
+                <p class="display-6 text-success">{{ item.price }} VND</p>
+                <p class="card-text">{{ item.description }}</p>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label fw-bold">Số lượng</label>
+                    <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" style="width: 100px; margin: 0 auto;" onchange="updateQuantity(this.value)">
+                </div>
+                <form method="POST" action="{{ url_for('add_to_cart', item_id=item.id) }}">
+                    <input type="hidden" name="quantity" id="hiddenQuantity" value="1">
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">Thêm vào giỏ hàng</button>
+                </form>
             </div>
-          {% else %}
-            <p class="text-muted mt-2">Chưa có đánh giá</p>
-          {% endif %}
         </div>
-
-        <div class="mt-4">
-          <h5 class="fw-semibold">Mô tả sản phẩm</h5>
-          <p class="text-muted">{{ item.description }}</p>
-        </div>
-
-        <hr>
-
-        <form method="POST" action="{{ url_for('add_to_cart', item_id=item.id) }}">
-          <div class="row align-items-center mb-3">
-            <label class="col-sm-3 col-form-label fw-bold">Số lượng</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control quantity-input border-primary" id="quantity" name="quantity" value="1" min="1" onchange="updateQuantity(this.value)">
-              <input type="hidden" name="quantity" id="hiddenQuantity" value="1">
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary btn-lg w-100 mt-3">
-            <i class="bi bi-cart-plus me-2"></i>Thêm vào giỏ hàng
-          </button>
-        </form>
-      </div>
-
-      <div class="mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="fw-bold text-dark">Đánh giá người dùng ({{ total_reviews }})</h4>
-          <form method="get" class="d-flex">
-            <select name="stars" class="form-select form-select-sm me-2" onchange="this.form.submit()">
-              <option value="">Tất cả</option>
-              {% for i in range(5, 0, -1) %}
-                <option value="{{ i }}" {% if star_filter == i %}selected{% endif %}>{{ i }} sao</option>
-              {% endfor %}
-            </select>
-          </form>
-        </div>
-
-        {% if reviews %}
-          {% for review in reviews %}
-          <div class="review-box">
-            <div class="d-flex justify-content-between align-items-center">
-              <strong>{{ review.user.username }}</strong>
-              <small class="text-muted">{{ review.created_at.strftime('%d/%m/%Y') }}</small>
-            </div>
-            <div class="mb-2">
-              {% for i in range(review.rating) %}
-                <i class="bi bi-star-fill review-star"></i>
-              {% endfor %}
-              {% for i in range(5 - review.rating) %}
-                <i class="bi bi-star review-star text-muted"></i>
-              {% endfor %}
-            </div>
-            <p class="mb-0">{{ review.review }}</p>
-          </div>
-          {% endfor %}
-
-          {% if pagination.pages > 1 %}
-          <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-              {% if pagination.has_prev %}
-              <li class="page-item">
-                <a class="page-link" href="{{ url_for('product_detail', item_id=item.id, page=pagination.prev_num, stars=star_filter) }}">&laquo;</a>
-              </li>
-              {% else %}
-              <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-              {% endif %}
-
-              {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                {% if page_num %}
-                  {% if page_num == pagination.page %}
-                    <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
-                  {% else %}
-                    <li class="page-item"><a class="page-link" href="{{ url_for('product_detail', item_id=item.id, page=page_num, stars=star_filter) }}">{{ page_num }}</a></li>
-                  {% endif %}
-                {% else %}
-                  <li class="page-item disabled"><span class="page-link">…</span></li>
-                {% endif %}
-              {% endfor %}
-
-              {% if pagination.has_next %}
-              <li class="page-item">
-                <a class="page-link" href="{{ url_for('product_detail', item_id=item.id, page=pagination.next_num, stars=star_filter) }}">&raquo;</a>
-              </li>
-              {% else %}
-              <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-              {% endif %}
-            </ul>
-          </nav>
-          {% endif %}
-        {% else %}
-          <div class="text-center text-muted">
-            <i class="bi bi-emoji-frown fs-1"></i>
-            <p class="mt-2">Không tìm thấy đánh giá nào với số sao đã chọn.</p>
-          </div>
-        {% endif %}
-      </div>
     </div>
-  </div>
-</div>
-
-<script>
-  function updateQuantity(value) {
-    document.getElementById('hiddenQuantity').value = value;
-  }
-</script>
-
+    <script>
+        function updateQuantity(value) {
+            document.getElementById('hiddenQuantity').value = value;
+        }
+    </script>
 {% endblock %}

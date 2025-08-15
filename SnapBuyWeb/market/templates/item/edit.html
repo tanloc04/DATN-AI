@@ -1,7 +1,7 @@
 {% extends 'base_admin.html' %}
 
 {% block title %}
-    Chỉnh sửa sản phẩm - SnapBuy
+    Edit Item - SnapBuy
 {% endblock %}
 
 {% block content %}
@@ -126,18 +126,7 @@
                     </a>
                     {{ form.submit(class="btn btn-primary btn-lg shadow-sm") }}
                 </div>
-            </div>
-
-            <p class="text-muted mt-3"><strong>Ngày tạo:</strong> {{ item.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
-
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('item_list') }}" class="btn btn-secondary btn-lg shadow-sm">
-                    <i class="bi bi-arrow-left"></i> Trở lại danh sách
-                </a>
-                <button type="submit" class="btn btn-primary btn-lg shadow-sm">
-                    <i class="bi bi-save me-1"></i> Cập nhật sản phẩm
-                </button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 {% endblock %}

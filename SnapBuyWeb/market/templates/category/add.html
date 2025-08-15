@@ -1,58 +1,33 @@
 {% extends 'base_admin.html' %}
 
 {% block title %}
-    Thêm danh mục mới
+Thêm danh mục mới
 {% endblock %}
 
 {% block content %}
 <div class="container mt-5">
-    <div class="card shadow-sm p-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-        <h2 class="text-primary fw-bold mb-4">Thêm danh mục mới</h2>
-
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-4">Thêm danh mục mới</h2>
         <form method="POST">
+            {{ form.hidden_tag() }}
+
             <div class="mb-3">
-                <label for="name" class="form-label fw-bold">Tên danh mục</label>
-                <input type="text" class="form-control border-primary" name="name" id="name" required placeholder="Nhập tên danh mục...">
-                {% if errors and errors.get('name') %}
-                    <div class="text-danger mt-1">
-                        {% for error in errors['name'] %}
-                            {{ error }}<br>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                {{ form.name.label(class="form-label") }}
+                {{ form.name(class="form-control") }}
+                {% for error in form.name.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
             </div>
 
             <div class="mb-3">
-                <label for="description" class="form-label fw-bold">Mô tả</label>
-                <textarea class="form-control border-primary" name="description" id="description" rows="3" placeholder="Mô tả danh mục (không bắt buộc)"></textarea>
-                {% if errors and errors.get('description') %}
-                    <div class="text-danger mt-1">
-                        {% for error in errors['description'] %}
-                            {{ error }}<br>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                {{ form.description.label(class="form-label") }}
+                {{ form.description(class="form-control", rows="3") }}
+                {% for error in form.description.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
             </div>
 
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('category_list') }}" class="btn btn-secondary shadow-sm">
-                    <i class="bi bi-arrow-left"></i> Trở lại
-                </a>
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="bi bi-plus-circle"></i> Thêm danh mục
-                </button>
-            </div>
+            {{ form.submit(class="btn btn-primary") }}
         </form>
     </div>
 </div>

@@ -1,68 +1,21 @@
 {% extends 'base_user.html' %}
-{% block title %}Đánh giá đơn hàng{% endblock %}
-
+{% block title %}
+Đánh giá đơn hàng
+{% endblock %}
 {% block content %}
-<style>
-  .rating-stars {
-  display: flex;
-  flex-direction: row-reverse; /* quan trọng */
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.rating-stars input[type="radio"] {
-  display: none;
-}
-
-.rating-stars label {
-  font-size: 2.5rem;
-  color: #ccc;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-/* Hover effect */
-.rating-stars label:hover,
-.rating-stars label:hover ~ label {
-  color: #ffca2c;
-}
-
-/* Selected effect */
-.rating-stars input[type="radio"]:checked ~ label {
-  color: #ccc;
-}
-
-.rating-stars input[type="radio"]:checked + label,
-.rating-stars input[type="radio"]:checked + label ~ label {
-  color: #ffc107;
-  }
-</style>
-
-<div class="container mt-5">
-  <div class="card shadow-sm rounded-4 p-4">
-    <h4 class="mb-4 text-center text-primary">Đánh giá sản phẩm: <strong>{{ order.item.name }}</strong></h4>
-    <form method="POST">
-      {{ form.hidden_tag() }}
-
-      <div class="mb-4">
-        <div class="rating-stars">
-          {% for i in range(5, 0, -1) %}
-            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" {% if form.rating.data == i %}checked{% endif %}>
-            <label for="star{{ i }}">★</label>
-          {% endfor %}
-        </div>
-      </div>
-
-      <div class="mb-4">
-        {{ form.review.label(class="form-label") }}
-        {{ form.review(class="form-control", rows=3, placeholder="Viết đánh giá của bạn...") }}
-      </div>
-
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary px-4">Gửi đánh giá</button>
-      </div>
-    </form>
-  </div>
+<div class="container mt-4">
+  <h4>Đánh giá sản phẩm: {{ order.item.name }}</h4>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.rating.label(class="form-label") }}
+      {{ form.rating(class="form-control", min=1, max=5, placeholder="1-5") }}
+    </div>
+    <div class="mb-3">
+      {{ form.review.label(class="form-label") }}
+      {{ form.review(class="form-control", rows=3) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Gửi đánh giá</button>
+  </form>
 </div>
 {% endblock %}
