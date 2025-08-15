@@ -5,7 +5,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="550a93d6-085b-4090-b88e-141223ea3ea1" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/about_header.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/news1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/news2.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/news3.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/news4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/news5.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/news6.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/team1.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/images/team2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/about_us.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/category_products.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/news.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/search.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/user_profile.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/instance/snapbuy.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/user_management.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/admin/user_management.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_admin.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/base_user.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/category/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/add.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/edit.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/item/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/checkout.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/checkout.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/market.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/order.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/order.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/order_confirmation.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/order_confirmation.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/rate_order.html" beforeDir="false" afterPath="$PROJECT_DIR$/SnapBuyWeb/market/templates/user/rate_order.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,23 +67,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python.market.executor&quot;: &quot;Run&quot;,
-    &quot;Python.run.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;restore-models&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/DATN-AI/SnapBuyWeb/model-ml&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.fonts.default&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.market.executor": "Run",
+    "Python.run.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "Merging restore-models",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/DATN-AI/SnapBuyWeb/model-ml",
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\DATN-AI\SnapBuyWeb\model-ml" />
