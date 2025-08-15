@@ -50,7 +50,6 @@ def analyze_page():
 
 @app.route('/market')
 def market_page():
-<<<<<<< HEAD
     from model_ml.content_recommender import get_content_recommendations
     from model_ml.mind_recommender import get_mind_recommendations
     from model_ml.ratings_recommender import get_ratings_recommendations
@@ -83,11 +82,6 @@ def market_page():
                            #recommended_items=recommended_items,
                            #mind_items=mind_items,
                            ratings_items=ratings_items)
-=======
-    items = Item.query.all()
-    categories = Category.query.all()
-    return render_template('user/market.html', items=items, categories=categories)
->>>>>>> parent of 3336b50 (Merge branch 'tai' into restore-models)
 
 @app.route('/items')
 @admin_required
