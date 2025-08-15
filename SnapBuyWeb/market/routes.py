@@ -77,9 +77,9 @@ def market_page():
     from model_ml.mind_recommender import get_mind_recommendations
     from model_ml.ratings_recommender import get_ratings_recommendations
 
-    recommended_items = get_content_recommendations(current_user, top_n=5)
+    #recommended_items = get_content_recommendations(current_user, top_n=5)
     latest_items = Item.query.order_by(Item.created_at.desc()).limit(10).all()
-    mind_items = get_mind_recommendations(current_user, top_n=5)
+    #mind_items = get_mind_recommendations(current_user, top_n=5)
     ratings_items = get_ratings_recommendations(current_user, top_n=5)
 
     categories = Category.query.all()
@@ -102,8 +102,8 @@ def market_page():
                            recently_viewed=recently_viewed_items,
                            selected_category = None,
                            price_filter=price_filter,latest_items=latest_items,
-                           recommended_items=recommended_items,
-                           mind_items=mind_items,
+                           #recommended_items=recommended_items,
+                           #mind_items=mind_items,
                            ratings_items=ratings_items)
 
 @app.route('/items')
