@@ -107,6 +107,72 @@
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   }
+
+    .recommended-section {
+    margin-top: 30px;
+}
+
+.recommended-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.product-card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-card img {
+    max-width: 100%;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.product-card h3 {
+    font-size: 1rem;
+    margin: 8px 0;
+    height: 40px; /* giữ tiêu đề không bị quá dài */
+    overflow: hidden;
+}
+
+.product-card .price {
+    color: #28a745;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.product-card .btn-view {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.product-card .btn-view:hover {
+    background-color: #0056b3;
+}
+
 </style>
 <main class="market-background">
   <div class="container market-container">
@@ -164,24 +230,54 @@
   </div>
 
   <!-- Gợi ý sản phẩm -->
-  <h2 class="section-title">Gợi ý sản phẩm cho bạn</h2>
-  <div class="row row-cols-1 row-cols-md-4 g-4">
-    {% for suggestion in suggested_items %}
-    <div class="col">
-      <div class="card product-card h-100">
-        <div class="product-img-container">
-          <img src="{{ suggestion.image_url }}" alt="{{ suggestion.name }}">
+{% if recommended_items %}
+<div class="recommended-section">
+    <h2>Sản phẩm dành cho bạn</h2>
+    <div class="product-list">
+        {% for item in recommended_items %}
+        <div class="product-card">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <h3>{{ item.name }}</h3>
+            <p class="price">{{ "{:,.0f}".format(item.price) }} đ</p>
+            <a href="{{ url_for('product_detail', item_id=item.id) }}" class="btn-view">Xem</a>
         </div>
-        <div class="product-body">
-          <h6>{{ suggestion.name }}</h6>
-          <p class="text-truncate small">{{ suggestion.description }}</p>
-          <p class="product-price">{{ "{:,.0f}".format(suggestion.price) }} đ</p>
-          <a href="{{ url_for('product_detail', item_id=suggestion.id) }}" class="btn btn-sm btn-primary">Xem</a>
-        </div>
-      </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
+</div>
+{% endif %}
+
+    {% if mind_items %}
+<div class="recommended-section">
+    <h2>Gợi ý dựa trên hành vi</h2>
+    <div class="product-list">
+        {% for item in mind_items %}
+        <div class="product-card">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <h3>{{ item.name }}</h3>
+            <p class="price">{{ "{:,.0f}".format(item.price) }} đ</p>
+            <a href="{{ url_for('product_detail', item_id=item.id) }}" class="btn-view">Xem</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+    {% if ratings_items %}
+<div class="recommended-section">
+    <h2>Gợi ý dựa trên đánh giá</h2>
+    <div class="product-list">
+        {% for item in ratings_items %}
+        <div class="product-card">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+            <h3>{{ item.name }}</h3>
+            <p class="price">{{ "{:,.0f}".format(item.price) }} đ</p>
+            <a href="{{ url_for('product_detail', item_id=item.id) }}" class="btn-view">Xem</a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
 
   <!-- Sản phẩm đã xem -->
   <h2 class="section-title">Sản phẩm bạn đã xem</h2>

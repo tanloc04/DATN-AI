@@ -73,6 +73,15 @@ def analyze_page():
 @app.route('/')
 @app.route('/market')
 def market_page():
+    from model_ml.content_recommender import get_content_recommendations
+    from model_ml.mind_recommender import get_mind_recommendations
+    from model_ml.ratings_recommender import get_ratings_recommendations
+
+    recommended_items = get_content_recommendations(current_user, top_n=5)
+    latest_items = Item.query.order_by(Item.created_at.desc()).limit(10).all()
+    mind_items = get_mind_recommendations(current_user, top_n=5)
+    ratings_items = get_ratings_recommendations(current_user, top_n=5)
+
     categories = Category.query.all()
     featured_categories = categories[:10]
     price_filter = request.args.get('price_filter')
@@ -92,7 +101,10 @@ def market_page():
                            suggested_items=suggested_items,
                            recently_viewed=recently_viewed_items,
                            selected_category = None,
-                           price_filter=price_filter)
+                           price_filter=price_filter,latest_items=latest_items,
+                           recommended_items=recommended_items,
+                           mind_items=mind_items,
+                           ratings_items=ratings_items)
 
 @app.route('/items')
 @admin_required
@@ -690,7 +702,7 @@ def recommend_content():
     import os
 
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    DATA_PATH = os.path.join(BASE_DIR, 'model-ml', 'data', 'items_content.csv')
+    DATA_PATH = os.path.join(BASE_DIR, 'model_ml', 'data', 'items_content.csv')
 
     try:
         # Load data sản phẩm từ CSV
@@ -746,7 +758,7 @@ def recommend_content():
 @login_required
 def recommend():
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    MODEL_PATH = os.path.join(BASE_DIR, 'model-ml', 'model_surprise.pkl')
+    MODEL_PATH = os.path.join(BASE_DIR, 'model_ml', 'model_surprise.pkl')
 
     try:
         with open(MODEL_PATH, 'rb') as f:
@@ -780,7 +792,7 @@ def recommend():
 @app.route('/recommendations/content-mind')
 @login_required
 def recommend_mind_content():
-    model_path = os.path.join('model-ml', 'model_content_mind.pkl')
+    model_path = os.path.join('model_ml', 'model_content_mind.pkl')
 
     if not os.path.exists(model_path):
         return "❌ Mô hình MIND chưa được tìm thấy.", 500

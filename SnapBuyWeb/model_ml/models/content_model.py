@@ -4,10 +4,10 @@ import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-MODEL_PATH = os.path.join('model-ml', 'model_content_based.pkl')
+MODEL_PATH = os.path.join('model_ml', 'model_content_based.pkl')
 
 def train_content_model():
-    df = pd.read_csv('model-ml/data/items_content.csv') # Đường dẫn tới dataset sản phẩm
+    df = pd.read_csv('model_ml/data/items_content.csv') # Đường dẫn tới dataset sản phẩm
 
     # Gộp các đặc trưng dạng văn bản lại thành 1 trường duy nhất
     df['combined'] = df['name'].fillna('') + ' ' + df['description'].fillna('') + ' ' + df['category'].fillna('')

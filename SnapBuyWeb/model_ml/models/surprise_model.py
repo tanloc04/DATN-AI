@@ -4,7 +4,7 @@ from surprise.model_selection import train_test_split
 import pickle
 import os
 
-def train_surprise_model(input_path="model-ml/data/ratings.csv", output_path="model-ml/model_surprise.pkl"):
+def train_surprise_model(input_path="model_ml/data/ratings.csv", output_path="model_ml/model_surprise.pkl"):
     if not os.path.exists(input_path):
         print(f"❌ File không tồn tại: {input_path}")
         return

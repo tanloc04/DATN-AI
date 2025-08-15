@@ -3,7 +3,7 @@ import os
 import csv
 from datetime import datetime
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # chính là model-ml
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # chính là model_ml
 DATA_DIR = os.path.join(BASE_DIR, 'MIND-small')
 
 # 1. Convert news.tsv to items.csv
