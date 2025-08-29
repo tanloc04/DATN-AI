@@ -4,16 +4,11 @@ from market import app, db
 from flask import request, render_template, redirect, url_for, flash, session, Blueprint, jsonify
 from market.models import Item, User, Order, Category, Rating, Tag, Brand, UserHistory
 from market.forms import AdminRegisterForm, AdminLoginForm, ItemForm, UserRegisterForm, UserLoginForm, OrderForm, CategoryForm, RatingForm, TagForm, BrandForm
-from sqlalchemy.orm import joinedload
 from market.decorators import admin_required
 from sqlalchemy.orm import joinedload
-from datetime import timedelta
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics.pairwise import linear_kernel
 import pickle
 import os
-import pandas as pd
 from datetime import datetime, timedelta
 from functools import wraps
 from werkzeug.security import generate_password_hash
@@ -40,12 +35,16 @@ def dashboard_page():
     total_orders = Order.query.count()
     total_ratings = Rating.query.count()
     total_categories = Category.query.count()
+    total_brands = Brand.query.count()
+    total_tags = Tag.query.count()
     return render_template('admin/dashboard.html',
                            total_items=total_items,
                            total_users=total_users,
                            total_orders=total_orders,
                            total_ratings=total_ratings,
-                           total_categories=total_categories)
+                           total_categories=total_categories,
+                           total_brands=total_brands,
+                           total_tags=total_tags)
 
 @app.route('/admin/revenue_data')
 @admin_required
@@ -70,11 +69,28 @@ def revenue_data():
 def analyze_page():
     return render_template('admin/analyze.html')
 
+
 @app.route('/')
 @app.route('/market')
 def market_page():
+    from model_ml.content_recommender import get_content_recommendations
+    from model_ml.mind_recommender import get_mind_recommendations
+    from model_ml.ratings_recommender import get_ratings_recommendations
+
+    if current_user.is_authenticated:
+        recommended_items = get_content_recommendations(current_user, top_n=5)
+        mind_items = get_mind_recommendations(current_user, top_n=5)
+        ratings_items = get_ratings_recommendations(current_user, top_n=5)
+    else:
+        recommended_items = []
+        mind_items = []
+        ratings_items = []
+
+    latest_items = Item.query.order_by(Item.created_at.desc()).limit(10).all()
+
     categories = Category.query.all()
     featured_categories = categories[:10]
+
     price_filter = request.args.get('price_filter')
     query = Item.query
     if price_filter == 'asc':
@@ -82,17 +98,28 @@ def market_page():
     elif price_filter == 'desc':
         query = query.order_by(Item.price.desc())
     items = query.limit(16).all()
+
     suggested_items = Item.query.order_by(Item.id.desc()).limit(8).all()
+
     recently_viewed_ids = session.get('viewed_items', [])
     recently_viewed_items = Item.query.filter(Item.id.in_(recently_viewed_ids)).all()
     id_order = {id_: i for i, id_ in enumerate(recently_viewed_ids)}
     recently_viewed_items.sort(key=lambda x: id_order.get(x.id, 0))
-    return render_template('user/market.html', items=items, categories=categories,
-                           featured_categories=featured_categories,
-                           suggested_items=suggested_items,
-                           recently_viewed=recently_viewed_items,
-                           selected_category = None,
-                           price_filter=price_filter)
+
+    return render_template(
+        'user/market.html',
+        items=items,
+        categories=categories,
+        featured_categories=featured_categories,
+        suggested_items=suggested_items,
+        recently_viewed=recently_viewed_items,
+        selected_category=None,
+        price_filter=price_filter,
+        latest_items=latest_items,
+        recommended_items=recommended_items,
+        mind_items=mind_items,
+        ratings_items=ratings_items
+    )
 
 @app.route('/items')
 @admin_required
@@ -112,41 +139,34 @@ def item_list():
 def add_item():
     form = ItemForm()
     form.category_id.choices = [(c.id, c.name) for c in Category.query.all()]
-    form.brand_id.choices = [(b.id, b.name) for b in Brand.query.all()]  # ✅ Brand choices
-    form.tag_ids.choices = [(t.id, t.name) for t in Tag.query.all()]     # ✅ Tag choices
+    form.brand_id.choices = [(b.id, b.name) for b in Brand.query.all()]
+    form.tag_ids.choices = [(t.id, t.name) for t in Tag.query.all()]
 
     if form.validate_on_submit():
-        item = Item(
-            name=form.name.data,
-            price=form.price.data,
-            description=form.description.data,
-            image_url=form.image_url.data,
-            category_id=form.category_id.data,
-            brand_id=form.brand_id.data  # ✅ Lưu brand
-        )
         try:
-            new_item = Item(
-                name=name,
-                price=price,
-                description=description,
-                image_url=image_url,
-                category_id=category_id
+            item = Item(
+                name=form.name.data,
+                price=form.price.data,
+                description=form.description.data,
+                image_url=form.image_url.data,
+                category_id=form.category_id.data,
+                brand_id=form.brand_id.data
             )
-            db.session.add(new_item)
+
+            if form.tag_ids.data:
+                item.tags = Tag.query.filter(Tag.id.in_(form.tag_ids.data)).all()
+
+            db.session.add(item)
             db.session.commit()
 
-            # ✅ Gán tag (quan hệ many-to-many)
-            tags = Tag.query.filter(Tag.id.in_(form.tag_ids.data)).all()
-            item.tags.extend(tags)
-            db.session.commit()
-
-            flash(f'Item "{item.name}" has been added successfully!', 'success')
+            flash(f'Item "{item.name}" đã được thêm thành công!', 'success')
             return redirect(url_for('item_list'))
+
         except Exception as e:
             db.session.rollback()
-            flash(f'Lỗi: {str(e)}', 'danger')
-    categories = Category.query.all()
-    return render_template('item/add.html', categories=categories)
+            flash(f'Lỗi khi thêm sản phẩm: {str(e)}', 'danger')
+
+    return render_template('item/add.html', form=form)
 
 @app.route('/items/edit/<int:id>', methods=['GET', 'POST'])
 @admin_required
@@ -164,34 +184,23 @@ def edit_item(id):
         form.tag_ids.data = [tag.id for tag in item.tags]
 
     if form.validate_on_submit():
-        item.name = form.name.data
-        item.price = form.price.data
-        item.description = form.description.data
-        item.image_url = form.image_url.data
-        item.category_id = form.category_id.data
-        item.brand_id = form.brand_id.data
-        item.tags = Tag.query.filter(Tag.id.in_(form.tag_ids.data)).all()
+        try:
+            item.name = form.name.data
+            item.price = form.price.data
+            item.description = form.description.data
+            item.image_url = form.image_url.data
+            item.category_id = form.category_id.data
+            item.brand_id = form.brand_id.data
+            item.tags = Tag.query.filter(Tag.id.in_(form.tag_ids.data)).all()
 
-    if request.method == 'POST':
-        item.name = request.form.get('name')
-        item.price = request.form.get('price')
-        item.description = request.form.get('description')
-        item.image_url = request.form.get('image_url')
-        category_id = request.form.get('category_id')
-        try:
-            item.category_id = int(category_id) if category_id else None
-        except ValueError:
-            flash('Invalid category selected.', 'danger')
-            return render_template('item/edit.html', item=item, categories=categories)
-        try:
             db.session.commit()
             flash(f'Sản phẩm "{item.name}" đã được cập nhật thành công!', 'success')
             return redirect(url_for('item_list'))
         except Exception as e:
             db.session.rollback()
             flash(f'Đã xảy ra lỗi khi cập nhật: {str(e)}', 'danger')
-    return render_template('item/edit.html', item=item, categories=categories)
 
+    return render_template('item/edit.html', form=form, item=item)
 
 @app.route('/items/delete/<int:id>')
 @admin_required
@@ -211,8 +220,23 @@ def delete_item(id):
 @app.route('/admin/brands')
 @admin_required
 def list_brands():
-    brands = Brand.query.all()
-    return render_template('brand/list.html', brands=brands)
+    page = request.args.get('page', 1, type=int)
+    search_query = request.args.get('search', '', type=str)
+    per_page = 12
+
+    query = Brand.query
+    if search_query:
+        query = query.filter(Brand.name.ilike(f"%{search_query}%"))
+
+    pagination = query.order_by(Brand.name.asc()).paginate(page=page, per_page=per_page, error_out=False)
+    brands = pagination.items
+
+    return render_template(
+        'brand/list.html',
+        brands=brands,
+        pagination=pagination,
+        search_query=search_query
+    )
 
 @app.route('/admin/brands/add', methods=['GET', 'POST'])
 @admin_required
@@ -250,8 +274,23 @@ def delete_brand(id):
 @app.route('/admin/tags')
 @admin_required
 def list_tags():
-    tags = Tag.query.all()
-    return render_template('tag/list.html', tags=tags)
+    page = request.args.get('page', 1, type=int)
+    search_query = request.args.get('search', '', type=str)
+    per_page = 12
+
+    query = Tag.query
+    if search_query:
+        query = query.filter(Tag.name.ilike(f"%{search_query}%"))
+
+    pagination = query.order_by(Tag.name.asc()).paginate(page=page, per_page=per_page, error_out=False)
+    tags = pagination.items
+
+    return render_template(
+        'tag/list.html',
+        tags=tags,
+        pagination=pagination,
+        search_query=search_query
+    )
 
 @app.route('/admin/tags/add', methods=['GET', 'POST'])
 @admin_required
@@ -284,7 +323,7 @@ def delete_tag(id):
     db.session.delete(tag)
     db.session.commit()
     flash('Tag deleted!', 'success')
-    return render_template()
+    return redirect(url_for('list_tags'))
 
 @app.route('/admin/register', methods=['GET', 'POST'])
 def register_admin():
@@ -368,7 +407,7 @@ def logout():
 @app.route('/item/<int:item_id>')
 def product_detail(item_id):
     item = Item.query.get_or_404(item_id)
-    # Ghi nhận lượt xem/click sản phẩm
+
     recent_view = UserHistory.query.filter_by(
         user_id=current_user.id,
         item_id=item.id,
@@ -385,28 +424,39 @@ def product_detail(item_id):
         )
         db.session.add(new_history)
         db.session.commit()
-    return render_template('item/detail.html', item=item)
+
     viewed = session.get('viewed_items', [])
     if item_id in viewed:
         viewed.remove(item_id)
     viewed.insert(0, item_id)
     session['viewed_items'] = viewed[:4]
+
     star_filter = request.args.get('stars', type=int)
     query = Rating.query.filter_by(item_id=item_id)
     if star_filter and 1 <= star_filter <= 5:
         query = query.filter(Rating.rating == star_filter)
+
     total_reviews = query.count()
     page = request.args.get('page', 1, type=int)
     per_page = 5
     pagination = query.order_by(Rating.created_at.desc()).paginate(page=page, per_page=per_page)
     reviews = pagination.items
+
     avg_rating = db.session.query(func.avg(Rating.rating)).filter_by(item_id=item_id).scalar()
     avg_rating = round(avg_rating, 1) if avg_rating else None
+
     has_rated = False
     if current_user.is_authenticated:
         has_rated = Rating.query.filter_by(user_id=current_user.id, item_id=item_id).first() is not None
-    return render_template('item/detail.html', item=item, reviews=reviews, avg_rating=avg_rating,
-                           has_rated=has_rated, total_reviews=total_reviews, pagination=pagination, star_filter=star_filter)
+
+    return render_template('item/detail.html',
+                           item=item,
+                           reviews=reviews,
+                           avg_rating=avg_rating,
+                           has_rated=has_rated,
+                           total_reviews=total_reviews,
+                           pagination=pagination,
+                           star_filter=star_filter)
 
 @app.route('/add_to_cart/<int:item_id>', methods=['POST'])
 @login_required
@@ -581,24 +631,27 @@ def category_list():
 @login_required
 def add_category():
     errors = {}
+
     if request.method == 'POST':
-        name = request.form.get('name')
-        description = request.form.get('description')
+        name = request.form.get('name', '').strip()
+        description = request.form.get('description', '').strip()
 
         if not name:
             errors['name'] = ['Tên danh mục không được để trống.']
         elif Category.query.filter_by(name=name).first():
             errors['name'] = ['Tên danh mục đã tồn tại.']
+
         if not errors:
             new_category = Category(name=name, description=description)
             try:
                 db.session.add(new_category)
                 db.session.commit()
-                flash('Danh mục mới đã được thêm thành công!', 'success')
-                return redirect(url_for('list_categories'))
+                flash('✅ Danh mục mới đã được thêm thành công!', 'success')
+                return redirect(url_for('category_list'))
             except Exception as e:
                 db.session.rollback()
-                flash(f'Lỗi khi thêm danh mục: {str(e)}', 'danger')
+                flash(f'❌ Lỗi khi thêm danh mục: {str(e)}', 'danger')
+
     return render_template('category/add.html', errors=errors)
 
 @app.route('/admin/categories/edit/<int:id>', methods=['GET', 'POST'])
@@ -681,132 +734,122 @@ def rate_order(order_id):
 
     return render_template('user/rate_order.html', form=form, order=order)
 
-@app.route('/recommendations/content')
-@login_required
-def recommend_content():
-    import pandas as pd
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
-    import os
-
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    DATA_PATH = os.path.join(BASE_DIR, 'model-ml', 'data', 'items_content.csv')
-
-    try:
-        # Load data sản phẩm từ CSV
-        df = pd.read_csv(DATA_PATH)
-
-        # Kết hợp các thông tin thành một trường tổng hợp
-        df['combined'] = df['name'].fillna('') + ' ' + df['description'].fillna('') + ' ' + df['category'].fillna('')
-
-        # Tính TF-IDF
-        tfidf = TfidfVectorizer(stop_words='english')
-        tfidf_matrix = tfidf.fit_transform(df['combined'])
-
-        # Tính cosine similarity
-        cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
-
-        # Map item_id → index trong dataframe
-        indices = pd.Series(df.index, index=df['id'])
-
-        # Lấy ID sản phẩm mà user đã mua
-        purchased_item_ids = {order.item_id for order in current_user.orders}
-
-        if not purchased_item_ids:
-            return "Bạn chưa mua sản phẩm nào để hệ thống gợi ý tương tự."
-
-        # Duyệt từng sản phẩm đã mua → gợi ý tương tự
-        all_scores = {}
-        for item_id in purchased_item_ids:
-            if item_id not in indices:
-                continue
-            idx = indices[item_id]
-            sim_scores = list(enumerate(cosine_sim[idx]))
-            sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
-
-            for sim_idx, score in sim_scores[1:]:
-                sim_item_id = int(df.iloc[sim_idx]['id'])
-                if sim_item_id not in purchased_item_ids:
-                    all_scores[sim_item_id] = max(all_scores.get(sim_item_id, 0), score)
-
-        if not all_scores:
-            return "Không tìm thấy sản phẩm tương tự phù hợp."
-
-        # Lấy top 5 sản phẩm gợi ý
-        top_items = sorted(all_scores.items(), key=lambda x: x[1], reverse=True)[:5]
-        recommended_items = [Item.query.get(item_id) for item_id, _ in top_items]
-
-        return render_template('user/recommendations.html', items=recommended_items)
-
-    except Exception as e:
-        return f"Lỗi gợi ý content-based: {str(e)}"
+# @app.route('/recommendations/content')
+# @login_required
+# def recommend_content():
+#     import pandas as pd
+#     from sklearn.feature_extraction.text import TfidfVectorizer
+#     from sklearn.metrics.pairwise import cosine_similarity
+#     import os
+#
+#     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+#     DATA_PATH = os.path.join(BASE_DIR, 'model_ml', 'data', 'items_content.csv')
+#
+#     try:
+#         df = pd.read_csv(DATA_PATH)
+#         df['combined'] = df['name'].fillna('') + ' ' + df['description'].fillna('') + ' ' + df['category'].fillna('')
+#
+#         tfidf = TfidfVectorizer(stop_words='english')
+#         tfidf_matrix = tfidf.fit_transform(df['combined'])
+#
+#         cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+#         indices = pd.Series(df.index, index=df['id'])
+#
+#         purchased_item_ids = {order.item_id for order in current_user.orders}
+#
+#         if not purchased_item_ids:
+#             return "Bạn chưa mua sản phẩm nào để hệ thống gợi ý tương tự."
+#
+#         all_scores = {}
+#         for item_id in purchased_item_ids:
+#             if item_id not in indices:
+#                 continue
+#             idx = indices[item_id]
+#             sim_scores = list(enumerate(cosine_sim[idx]))
+#             sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+#
+#             for sim_idx, score in sim_scores[1:]:
+#                 sim_item_id = int(df.iloc[sim_idx]['id'])
+#                 if sim_item_id not in purchased_item_ids:
+#                     all_scores[sim_item_id] = max(all_scores.get(sim_item_id, 0), score)
+#
+#         if not all_scores:
+#             return "Không tìm thấy sản phẩm tương tự phù hợp."
+#
+#         top_items = sorted(all_scores.items(), key=lambda x: x[1], reverse=True)[:5]
+#         recommended_items = [Item.query.get(item_id) for item_id, _ in top_items]
+#
+#         return render_template('user/recommendations.html', items=recommended_items)
+#
+#     except Exception as e:
+#         return f"Lỗi gợi ý content-based: {str(e)}"
 
 
-@app.route('/recommendations/ratings')
-@login_required
-def recommend():
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    MODEL_PATH = os.path.join(BASE_DIR, 'model-ml', 'model_surprise.pkl')
+# @app.route('/recommendations/ratings')
+# @login_required
+# def recommend():
+#     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+#     MODEL_PATH = os.path.join(BASE_DIR, 'model_ml', 'model_surprise.pkl')
+#
+#     try:
+#         with open(MODEL_PATH, 'rb') as f:
+#             model = pickle.load(f)
+#
+#
+#         items = Item.query.options(joinedload(Item.orders)).all()
+#
+#
+#         purchased_item_ids = {order.item_id for order in current_user.orders}
+#
+#
+#         item_ids = [item.id for item in items if item.id not in purchased_item_ids]
+#
+#
+#         predictions = []
+#         for item_id in item_ids:
+#             pred = model.predict(str(current_user.id), str(item_id))
+#             print(f"[CF] Item {item_id} → predicted rating: {pred.est:.2f}")
+#             predictions.append((item_id, pred.est))
+#
+#
+#         top_items = sorted(predictions, key=lambda x: x[1], reverse=True)[:5]
+#         recommended_items = [Item.query.get(item_id) for item_id, _ in top_items]
+#
+#         return render_template('user/recommendations.html', items=recommended_items)
+#
+#     except Exception as e:
+#         return f"Lỗi gợi ý: {str(e)}"
 
-    try:
-        with open(MODEL_PATH, 'rb') as f:
-            model = pickle.load(f)
-
-        # Lấy toàn bộ sản phẩm
-        items = Item.query.options(joinedload(Item.orders)).all()
-
-        # Lấy ID sản phẩm mà user đã mua
-        purchased_item_ids = {order.item_id for order in current_user.orders}
-
-        # Lọc ra những sản phẩm mà user chưa mua
-        item_ids = [item.id for item in items if item.id not in purchased_item_ids]
-
-        # Dự đoán rating
-        predictions = []
-        for item_id in item_ids:
-            pred = model.predict(str(current_user.id), str(item_id))
-            print(f"[CF] Item {item_id} → predicted rating: {pred.est:.2f}")
-            predictions.append((item_id, pred.est))
-
-        # Chọn top 5 sản phẩm được dự đoán rating cao nhất
-        top_items = sorted(predictions, key=lambda x: x[1], reverse=True)[:5]
-        recommended_items = [Item.query.get(item_id) for item_id, _ in top_items]
-
-        return render_template('user/recommendations.html', items=recommended_items)
-
-    except Exception as e:
-        return f"Lỗi gợi ý: {str(e)}"
-
-@app.route('/recommendations/content-mind')
-@login_required
-def recommend_mind_content():
-    model_path = os.path.join('model-ml', 'model_content_mind.pkl')
-
-    if not os.path.exists(model_path):
-        return "❌ Mô hình MIND chưa được tìm thấy.", 500
-
-    with open(model_path, 'rb') as f:
-        mind_model = pickle.load(f)
-
-    user_id = current_user.id
-
-    tfidf_matrix = mind_model['tfidf_matrix']
-    user_profiles = mind_model['user_profiles']
-    item_ids = mind_model['item_ids']
-    items_df = mind_model['items_df']
-
-    if user_id not in user_profiles:
-        return "Người dùng chưa có lịch sử tương tác.", 400
-
-    user_vector = mind_model['user_profiles'][user_id]
-    user_vector = np.asarray(user_vector)
-    cosine_sim = linear_kernel(user_vector, tfidf_matrix).flatten()
-    top_indices = cosine_sim.argsort()[-10:][::-1]
-    recommended_item_ids = [item_ids[idx] for idx in top_indices]
-
-    recommended_items = items_df[items_df['id'].isin(recommended_item_ids)].to_dict(orient='records')
-
-    return render_template('user/recommendations.html', items=recommended_items)
+# @app.route('/recommendations/content-mind')
+# @login_required
+# def recommend_mind_content():
+#     model_path = os.path.join('model_ml', 'model_content_mind.pkl')
+#
+#     if not os.path.exists(model_path):
+#         return "Mô hình MIND chưa được tìm thấy.", 500
+#
+#     with open(model_path, 'rb') as f:
+#         mind_model = pickle.load(f)
+#
+#     user_id = current_user.id
+#
+#     tfidf_matrix = mind_model['tfidf_matrix']
+#     user_profiles = mind_model['user_profiles']
+#     item_ids = mind_model['item_ids']
+#     items_df = mind_model['items_df']
+#
+#     if user_id not in user_profiles:
+#         return "Người dùng chưa có lịch sử tương tác.", 400
+#
+#     user_vector = mind_model['user_profiles'][user_id]
+#     user_vector = np.asarray(user_vector)
+#     cosine_sim = linear_kernel(user_vector, tfidf_matrix).flatten()
+#     top_indices = cosine_sim.argsort()[-10:][::-1]
+#     recommended_item_ids = [item_ids[idx] for idx in top_indices]
+#
+#     recommended_items = items_df[items_df['id'].isin(recommended_item_ids)].to_dict(orient='records')
+#
+#     return render_template('user/recommendations.html', items=recommended_items)
 
 
 @app.route('/categories/<int:category_id>')

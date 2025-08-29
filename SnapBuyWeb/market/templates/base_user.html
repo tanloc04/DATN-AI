@@ -76,7 +76,7 @@
   }
 
   footer {
-    background-color: #212529;
+    background-color: var(--primary-color) !important;
     color: white;
   }
 
@@ -97,7 +97,7 @@
   <div class="container-fluid px-4">
     <!-- Logo -->
     <a class="navbar-brand d-flex align-items-center fw-bold" href="{{ url_for('market_page') }}">
-      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SnapBuy Logo" height="34" class="me-2">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="SnapBuy Logo" width="150" class="me-2">
     </a>
 
     <!-- Toggle button for mobile -->
@@ -145,11 +145,11 @@
   </a>
 </li>
 
-<li class="nav-item">
-  <a class="nav-link" href="#">
-    <i class="bi bi-stars me-1"></i> Sản phẩm nổi bật
-  </a>
-</li>
+<!--<li class="nav-item">-->
+<!--  <a class="nav-link" href="#">-->
+<!--    <i class="bi bi-stars me-1"></i> Sản phẩm nổi bật-->
+<!--  </a>-->
+<!--</li>-->
 
 {% if current_user.is_authenticated and session['role'] == 'user' %}
 <li class="nav-item">
@@ -233,7 +233,7 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
-  <footer class="bg-dark text-white pt-4 mt-auto border-top">
+  <footer class="text-white pt-4 mt-auto border-top">
   <div class="container">
 
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-3">

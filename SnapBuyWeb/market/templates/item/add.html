@@ -1,105 +1,82 @@
-{% extends 'base_admin.html' %}
+{% extends "base_admin.html" %}
 
 {% block title %}
-    Thêm sản phẩm mới
+    Add Item - SnapBuy
 {% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-primary fw-bold mb-4">Thêm sản phẩm mới</h2>
+<div class="container mt-4">
+    <h2 class="mb-4">➕ Add New Item</h2>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+    <form method="POST" action="{{ url_for('add_item') }}">
+        {{ form.hidden_tag() }}
+
+        <!-- Name -->
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="Enter item name") }}
+            {% for error in form.name.errors %}
+                <div class="text-danger">{{ error }}</div>
             {% endfor %}
-        {% endif %}
-    {% endwith %}
+        </div>
 
-    <div class="card p-4 shadow-sm" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);">
-        <form method="POST">
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="name" class="form-label fw-bold">Tên sản phẩm</label>
-                        <input type="text" class="form-control border-primary" name="name" required placeholder="Nhập tên sản phẩm">
-                    </div>
+        <!-- Price -->
+        <div class="mb-3">
+            {{ form.price.label(class="form-label") }}
+            {{ form.price(class="form-control", placeholder="Enter price") }}
+            {% for error in form.price.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
 
-                    <div class="mb-3">
-                        <label for="price" class="form-label fw-bold">Giá</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-primary text-white">₫</span>
-                            <input type="number" class="form-control border-primary" name="price" step="0.01" required placeholder="0.00">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            {{ form.image_url.label(class="form-label fw-bold") }}
-                            {{ form.image_url(class="form-control border-primary", placeholder="Enter image URL") }}
-                            {% if form.image_url.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.image_url.errors %}
-                                        {{ error }}<br>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="mb-3">
-                            {{ form.description.label(class="form-label fw-bold") }}
-                            {{ form.description(class="form-control border-primary", rows="4", placeholder="Enter product description...") }}
-                            {% if form.description.errors %}
-                                <div class="text-danger">
-                                    {% for error in form.description.errors %}
-                                        {{ error }}<br>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <div class="form-group">
-                            {{ form.brand_id.label }}<br>
-                            {{ form.brand_id(class="form-control") }}
-                        </div>
-                        <div class="form-group">
-                            {{ form.tag_ids.label }}<br>
-                            {% for subfield in form.tag_ids %}
-                                <label class="checkbox-inline">
-                                    {{ subfield() }} {{ subfield.label.text }}
-                                </label><br>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+        <!-- Description -->
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows="3", placeholder="Enter description") }}
+            {% for error in form.description.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
 
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="description" class="form-label fw-bold">Mô tả</label>
-                        <textarea class="form-control border-primary" name="description" rows="5" placeholder="Nhập mô tả sản phẩm"></textarea>
-                    </div>
+        <!-- Image URL -->
+        <div class="mb-3">
+            {{ form.image_url.label(class="form-label") }}
+            {{ form.image_url(class="form-control", placeholder="http://...") }}
+            {% for error in form.image_url.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
 
-                    <div class="mb-3">
-                        <label for="category_id" class="form-label fw-bold">Danh mục</label>
-                        <select class="form-select border-primary" name="category_id" required>
-                            <option value="">-- Chọn danh mục --</option>
-                            {% for category in categories %}
-                                <option value="{{ category.id }}">{{ category.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
+        <!-- Category -->
+        <div class="mb-3">
+            {{ form.category_id.label(class="form-label") }}
+            {{ form.category_id(class="form-select") }}
+            {% for error in form.category_id.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
 
-            <div class="d-flex justify-content-between mt-4">
-                <a href="{{ url_for('item_list') }}" class="btn btn-secondary btn-lg shadow-sm">
-                    <i class="bi bi-arrow-left"></i> Trở lại danh sách
-                </a>
-                <button type="submit" class="btn btn-primary btn-lg shadow-sm">
-                    <i class="bi bi-check-circle me-1"></i> Thêm sản phẩm
-                </button>
-            </div>
-        </form>
-    </div>
+        <!-- Brand -->
+        <div class="mb-3">
+            {{ form.brand_id.label(class="form-label") }}
+            {{ form.brand_id(class="form-select") }}
+            {% for error in form.brand_id.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Tags (multiple select) -->
+        <div class="mb-3">
+            {{ form.tag_ids.label(class="form-label") }}
+            {{ form.tag_ids(class="form-select", multiple=True, size=5) }}
+            {% for error in form.tag_ids.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn btn-primary">Add Item</button>
+        <a href="{{ url_for('item_list') }}" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>
 {% endblock %}

@@ -6,7 +6,6 @@ from market.models import User
 from wtforms import FloatField, TextAreaField, IntegerField
 from wtforms.validators import NumberRange
 
-
 class AdminRegisterForm(FlaskForm):
     username = StringField(label='Username', validators=[Length(min=4, max=30), DataRequired()])
     email = StringField(label='Email', validators=[Email(), Length(max=100), DataRequired()])

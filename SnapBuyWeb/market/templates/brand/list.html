@@ -1,19 +1,110 @@
 {% extends 'base_admin.html' %}
-{% block title %}Brand List{% endblock %}
+{% block title %}Brand{% endblock %}
+
 {% block content %}
+<style>
+  .table thead th {
+    background-color: #f8f9fa;
+    color: #343a40;
+  }
+  .table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+
 <div class="container mt-4">
-    <h2 class="fw-bold text-primary">Brand List</h2>
-    <a href="{{ url_for('add_brand') }}" class="btn btn-success mb-3">+ Add Brand</a>
-    <ul class="list-group">
-        {% for brand in brands %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                {{ brand.name }}
-                <div>
-                    <a href="{{ url_for('edit_brand', id=brand.id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <a href="{{ url_for('delete_brand', id=brand.id) }}" class="btn btn-sm btn-danger">Delete</a>
-                </div>
-            </li>
-        {% endfor %}
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h2 class="text-primary fw-bold mb-0"><i class="bi bi-building me-2"></i>Danh sách thương hiệu</h2>
+    <a href="{{ url_for('add_brand') }}" class="btn btn-success btn-lg shadow-sm">
+      <i class="bi bi-plus-circle me-1"></i> Thêm thương hiệu
+    </a>
+  </div>
+
+  <!-- Tìm kiếm -->
+  <form class="mb-4" method="GET" action="{{ url_for('list_brands') }}">
+    <div class="input-group" style="max-width: 400px;">
+      <input type="text" name="search" class="form-control" placeholder="Tìm kiếm theo tên thương hiệu..." value="{{ search_query }}">
+      <button class="btn btn-outline-primary" type="submit">
+        <i class="bi bi-search"></i> Tìm kiếm
+      </button>
+    </div>
+  </form>
+
+  {% if brands %}
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0 align-middle">
+          <thead>
+            <tr class="text-center">
+              <th>#</th>
+              <th>Tên thương hiệu</th>
+              <th>Mô tả</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for brand in brands %}
+            <tr>
+              <td class="text-center">{{ loop.index + ((pagination.page - 1) * pagination.per_page) }}</td>
+              <td>{{ brand.name }}</td>
+              <td class="text-muted">{{ brand.description or '-' }}</td>
+              <td class="text-center">
+                <a href="{{ url_for('edit_brand', id=brand.id) }}" class="btn btn-sm btn-outline-warning me-2">
+                  <i class="bi bi-pencil-square"></i> Sửa
+                </a>
+                <form method="POST" action="{{ url_for('delete_brand', id=brand.id) }}" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bạn chắc chắn muốn xoá thương hiệu này?')">
+                    <i class="bi bi-trash3"></i> Xoá
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phân trang -->
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if pagination.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('list_brands', page=pagination.prev_num, search=search_query) }}">&laquo;</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+      {% endif %}
+
+      {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+        {% if p %}
+          {% if p == pagination.page %}
+          <li class="page-item active"><span class="page-link">{{ p }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('list_brands', page=p, search=search_query) }}">{{ p }}</a></li>
+          {% endif %}
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if pagination.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('list_brands', page=pagination.next_num, search=search_query) }}">&raquo;</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+      {% endif %}
     </ul>
+  </nav>
+
+  {% else %}
+  <div class="card text-center p-5 shadow-sm">
+    <h4 class="text-muted">Không tìm thấy thương hiệu nào</h4>
+    <p class="text-secondary">Hãy thử từ khoá khác hoặc thêm thương hiệu mới.</p>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

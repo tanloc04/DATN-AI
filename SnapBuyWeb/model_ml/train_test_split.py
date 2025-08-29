@@ -27,7 +27,6 @@ ss_res = np.sum((y_true - y_pred) ** 2)
 ss_tot = np.sum((y_true - np.mean(y_true)) ** 2)
 r2 = 1 - (ss_res / ss_tot)
 
-# In ra các kết quả
 print(f"RMSE: {rmse}")
 print(f"MSE: {mse}")
 print(f"MAE: {mae}")

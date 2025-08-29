@@ -155,6 +155,8 @@
 <div class="sidebar" id="sidebar">
     <h5 class="px-3">Admin Menu</h5>
     <a href="{{ url_for('item_list') }}" class="{% if 'item' in request.path %}active{% endif %}"><i class="bi bi-box-seam me-2"></i>Item</a>
+    <a href="{{ url_for('list_brands') }}" class="{% if 'brand' in request.path %}active{% endif %}"><i class="bi bi-bookmark-heart me-2"></i>Brand</a>
+    <a href="{{ url_for('list_tags') }}" class="{% if 'tag' in request.path %}active{% endif %}"><i class="bi bi-tag me-2"></i>Tag</a>
     <a href="{{ url_for('manage_users') }}" class="{% if 'user' in request.path %}active{% endif %}"><i class="bi bi-people me-2"></i>User Management</a>
     <a href="{{ url_for('category_list') }}" class="{% if 'category' in request.path %}active{% endif %}"><i class="bi bi-tags me-2"></i>Category</a>
     <a href="#" class="{% if 'import' in request.path %}active{% endif %}"><i class="bi bi-upload me-2"></i>Import Data</a>
@@ -207,6 +209,18 @@
     <div class="p-4 rounded bg-info shadow">
       <h5>Danh mục</h5>
       <h4>{{ total_categories }}</h4>
+    </div>
+  </div>
+        <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-dark shadow">
+      <h5>Nhãn hàng</h5>
+      <h4>{{ total_brands }}</h4>
+    </div>
+  </div>
+        <div class="col-md-3 mb-3">
+    <div class="p-4 rounded bg-secondary shadow">
+      <h5>Nhãn</h5>
+      <h4>{{ total_tags }}</h4>
     </div>
   </div>
 </div>

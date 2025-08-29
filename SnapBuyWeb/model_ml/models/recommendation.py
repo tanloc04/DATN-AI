@@ -1,7 +1,7 @@
 import pickle
 import os
 
-MODEL_PATH = os.path.join('model-ml', 'model_content_based.pkl')
+MODEL_PATH = os.path.join('model_ml', 'model_content_based.pkl')
 
 with open(MODEL_PATH, 'rb') as f:
     model_data = pickle.load(f)

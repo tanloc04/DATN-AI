@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, inspect
 import pickle
 
 # Đường dẫn lưu model
-MODEL_PATH = 'model-ml/model_content_mind.pkl'
+MODEL_PATH = 'model_ml/model_content_mind.pkl'
 
 print("[INFO] Đang kết nối database...")
 engine = create_engine('sqlite:///instance/snapbuy.db')

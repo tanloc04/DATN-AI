@@ -1,8 +1,8 @@
-"""Thêm brand_id có đặt tên rõ ràng
+"""Add column brand_id in Item table
 
-Revision ID: 9f6b6874b275
-Revises: 
-Create Date: 2025-07-26 23:13:31.523634
+Revision ID: 69a9ea008418
+Revises: 7a7539bdd9dd
+Create Date: 2025-08-15 19:27:03.486147
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9f6b6874b275'
-down_revision = None
+revision = '69a9ea008418'
+down_revision = '7a7539bdd9dd'
 branch_labels = None
 depends_on = None
 
